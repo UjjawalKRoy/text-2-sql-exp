@@ -107,5 +107,47 @@ emp_profile_few_shots = [
         'SQLResult': "[('MongoDB, Data Analysis, FastAPI - Python,)]",
         'Answer': "Yes"
     },
+    {
+        'Question': "Which department does Ujjawal Roy works in?",
+        'SQLQuery': "SELECT department_name FROM employee_profile WHERE employee_name = 'Ujjawal Roy'",
+        'SQLResult': "[('Data Science & AI/ML',)]",
+        'Answer': "Data Science & AI/ML"
+    },
+    {
+        'Question': "Brief me about MI-516",
+        'SQLQuery': "SELECT * FROM employee_profile WHERE employee_code = 'MI-516'",
+        'SQLResult': "[('MI-516', 'Ujjawal Roy', 'ujjawal.roy@mailinator.com', datetime.datetime(1997, 12, 12, 0, 0), 'B+', None, 'https://github.com/UjjawalKRoy', 'Mindinventory', 'on probation', 'Data Science & AI/ML', 'Data Scientist', 0.0, 'Samar Patel', 138, 'Artificial Intelligence, Computer Vision, Neural Network Architectures, Python for Data Science CNN, LLM, LLM, 'filled')]",
+        'Answer': "Data Science & AI/ML"
+    },
+    {
+        'Question': "How many Python devs do we have?",
+        'SQLQuery': "SELECT COUNT(*) FROM employee_profile WHERE employee_skill LIKE '%Python%'",
+        'SQLResult': "[(9,)]",
+        'Answer': "9"
+    },
+    {
+        'Question': "Has Nency Patel filled her logs?",
+        'SQLQuery': "SELECT timesheet_filling_status FROM employee_profile WHERE employee_name = 'Nency Patel'",
+        'SQLResult': "[('filled',)]",
+        'Answer': "filled"
+    },
+    {
+        'Question': "Who is the CEO of MindInventory?",
+        'SQLQuery': "SELECT employee_name FROM employee_profile WHERE job_title = 'CEO' AND business_unit_name = 'MindInventory'",
+        'SQLResult': "[('Mehul Rajput',),]",
+        'Answer': "Mehul Rajput"
+    },
+    {
+        'Question': "I need 3 devs who are proficient in python and sql",
+        'SQLQuery': "SELECT employee_name FROM employee_profile WHERE employee_skill LIKE '%python%' AND employee_skill LIKE '%sql%' LIMIT 3",
+        'SQLResult': "[('Hasmukh Suthar',)]",
+        'Answer': "Hasmukh Suthar"
+    },
+    {
+        'Question': "Who all are in probation?",
+        'SQLQuery': "SELECT employee_name FROM employee_profile WHERE employment_status = 'on probation'",
+        'SQLResult': "",
+        'Answer': "None"
+    },
 ]
 print(len(emp_profile_few_shots))
