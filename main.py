@@ -5,18 +5,32 @@ from langchain.prompts import SemanticSimilarityExampleSelector
 from langchain.prompts.prompt import PromptTemplate
 from langchain.utilities.sql_database import SQLDatabase
 from langchain.vectorstores import Chroma
+from langchain_core.callbacks import CallbackManager, StreamingStdOutCallbackHandler
 from langchain_experimental.sql import SQLDatabaseChain
+from langchain_community.llms.llamacpp import LlamaCpp
 from langchain_google_genai import GoogleGenerativeAI
+
+import system_prompt
 from examples import emp_profile_few_shots
 from ques import ques
 
 import langchain
 
-langchain.verbose = True
+# langchain.verbose = True
 
-api_key = 'AIzaSyA5npGkRSAWoCt4P93ztBzl0o2lIk8GOnI'
-
-llm = GoogleGenerativeAI(model="models/text-bison-001", google_api_key=api_key)
+# api_key = 'AIzaSyA5npGkRSAWoCt4P93ztBzl0o2lIk8GOnI'
+callback_manager = CallbackManager([StreamingStdOutCallbackHandler()])
+llm = LlamaCpp(
+    model_path="C:/Users/admin/.cache/lm-studio/models/TheBloke/nsql-llama-2-7B-GGUF/nsql-llama-2-7b.Q8_0.gguf",
+    n_ctx=8000,
+    n_gpu_layers=40,
+    n_threads=8,
+    n_batch=512,
+    max_tokens=200,
+    temperature=0.8,
+    top_p=0.1,
+    callback_manager=callback_manager
+)
 
 db = SQLDatabase.from_uri("mysql://root:password@localhost/mrms", include_tables=['employee_profile'])
 
@@ -28,21 +42,7 @@ example_selector = SemanticSimilarityExampleSelector(
     vectorstore=vectorstore,
     k=2,
 )
-mysql_prompt = """You are a MySQL expert. Given an input question, first create a syntactically correct MySQL query to run, then look at the results of the query and return the answer to the input question.
-    Unless the user specifies in the question a specific number of examples to obtain, query for at most {top_k} results using the LIMIT clause as per MySQL. You can order the results to return the most informative data in the database.
-    Never query for all columns from a table. You must query only the columns that are needed to answer the question. Wrap each column name in backticks (`) to denote them as delimited identifiers.
-    Pay attention to use only the column names you can see in the tables below. Be careful to not query for columns that do not exist. Also, pay attention to which column is in which table.
-    Pay attention to use CURDATE() function to get the current date, if the question involves "today".
 
-    Use the following format:
-
-    Question: Question here
-    SQLQuery: Query to run with no pre-amble
-    SQLResult: Result of the SQLQuery
-    Answer: Final answer here
-
-    No pre-amble.
-    """
 
 example_prompt = PromptTemplate(
     input_variables=["Question", "SQLQuery", "SQLResult", "Answer", ],
@@ -52,7 +52,7 @@ example_prompt = PromptTemplate(
 few_shot_prompt = FewShotPromptTemplate(
     example_selector=example_selector,
     example_prompt=example_prompt,
-    prefix=mysql_prompt,
+    prefix=system_prompt.DEFAULT_PROMPT,
     suffix=PROMPT_SUFFIX,
     input_variables=["input", "table_info", "top_k"],  # These variables are used in the prefix and suffix
 )
@@ -61,4 +61,4 @@ db_chain = SQLDatabaseChain.from_llm(llm, db, verbose=True, prompt=few_shot_prom
 
 # for q in ques:
 #     db_chain.invoke({"query": q})
-qns1 = db_chain.invoke({"query": "Urgently need b positive?"})
+qns1 = db_chain.invoke({"query": "How many people have not filled their logs?"})
