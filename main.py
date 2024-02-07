@@ -58,10 +58,11 @@ few_shot_prompt = FewShotPromptTemplate(
 
 def create_db_chain(tables: list[str], query: str):
     db = SQLDatabase.from_uri("mysql://root:password@localhost/mrms", include_tables=tables)
-    db_chain = SQLDatabaseChain.from_llm(llm, db, verbose=True, prompt=few_shot_prompt)
+    db_chain = SQLDatabaseChain.from_llm(llm, db, verbose=True, prompt=few_shot_prompt, return_direct=True)
     # for q in ques:
     #     db_chain.invoke({"query": q})
     qns1 = db_chain.invoke({"query": query})
+
     return qns1
 
 
