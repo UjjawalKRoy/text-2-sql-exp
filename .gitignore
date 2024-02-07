@@ -309,3 +309,4 @@ pyrightconfig.json
 .idea/
 .idea
 .ipynb*
+.xml
