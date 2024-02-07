@@ -258,5 +258,17 @@ emp_profile_few_shots = [
         'SQLResult': "[(11.0,)]",
         'Answer': "You have 11 total leaves."
     },
+    {
+        'Question': "Whose Anniversary is in the next week?",
+        'SQLQuery': "SELECT employee_code, first_name, last_name, join_date FROM   employee WHERE  Date_add(join_date, INTERVAL Year(CURRENT_DATE()) - Year(join_date) year) BETWEEN CURRENT_DATE() AND Date_add(CURRENT_DATE(), INTERVAL 7 day);",
+        'SQLResult': "[('MI-354', 'Deep', 'Bhavsar'), ('MI-512', 'Ashutosh', 'Kaushik'), ('MI-197', 'Faiyaz','Meghreji'), ('MI-243', 'Keval', 'Senghani')]",
+        'Answer': "The following employees had their work anniversaries next week:- Deep Bhavsar- Ashutosh Kaushik- Faiyaz Meghreji- Keval Senghani"
+    },
+    {
+        'Question': "Whose Anniversary is tomorrow?",
+        'SQLQuery': "SELECT employee_code, first_name, last_name, join_date FROM   employee WHERE  Date_add(join_date, INTERVAL Year(CURRENT_DATE()) - Year(join_date) YEAR) = DATE_ADD(CURRENT_DATE(), INTERVAL 1 DAY);",
+        'SQLResult': "[('MI-354', 'Deep', 'Bhavsar'), ('MI-512', 'Ashutosh', 'Kaushik'), ('MI-197', 'Faiyaz','Meghreji'), ('MI-243', 'Keval', 'Senghani')]",
+        'Answer': "The following employees had their work anniversaries tomorrow:- Deep Bhavsar- Ashutosh Kaushik- Faiyaz Meghreji- Keval Senghani"
+    },
 ]
 print(len(emp_profile_few_shots))
