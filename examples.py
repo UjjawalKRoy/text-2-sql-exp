@@ -252,5 +252,11 @@ emp_profile_few_shots = [
         'SQLResult': "[('MI-354', 'Deep', 'Bhavsar'), ('MI-512', 'Ashutosh', 'Kaushik'), ('MI-197', 'Faiyaz','Meghreji'), ('MI-243', 'Keval', 'Senghani')]",
         'Answer': "The following employees had their work anniversaries last week:- Deep Bhavsar- Ashutosh Kaushik- Faiyaz Meghreji- Keval Senghani"
     },
+{
+        'Question': "How many leaves do I have? employee_code of user querying=MI-488",
+        'SQLQuery': "SELECT sum(balance) FROM leave_balance WHERE employee_id IN (SELECT id FROM employee WHERE employee_code = 'MI-488');",
+        'SQLResult': "[(11.0,)]",
+        'Answer': "You have 11 total leaves."
+    },
 ]
 print(len(emp_profile_few_shots))
