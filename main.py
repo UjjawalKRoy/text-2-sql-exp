@@ -32,7 +32,6 @@ llm = GoogleGenerativeAI(model="models/text-bison-001", google_api_key=api_key)
 #     callback_manager=callback_manager
 # )
 
-db = SQLDatabase.from_uri("mysql://root:password@localhost/mrms", include_tables=['employee', 'leave_application'])
 
 # print(db.table_info)
 embeddings = HuggingFaceEmbeddings(model_name='sentence-transformers/all-MiniLM-L6-v2')
@@ -42,7 +41,6 @@ example_selector = SemanticSimilarityExampleSelector(
     vectorstore=vectorstore,
     k=2,
 )
-
 
 example_prompt = PromptTemplate(
     input_variables=["Question", "SQLQuery", "SQLResult", "Answer", ],
@@ -57,8 +55,17 @@ few_shot_prompt = FewShotPromptTemplate(
     input_variables=["input", "table_info", "top_k"],  # These variables are used in the prefix and suffix
 )
 
-db_chain = SQLDatabaseChain.from_llm(llm, db, verbose=True, prompt=few_shot_prompt)
 
-# for q in ques:
-#     db_chain.invoke({"query": q})
-qns1 = db_chain.invoke({"query": "How many people have not filled their logs?"})
+def create_db_chain(tables: list[str], query: str):
+    db = SQLDatabase.from_uri("mysql://root:password@localhost/mrms", include_tables=tables)
+    db_chain = SQLDatabaseChain.from_llm(llm, db, verbose=True, prompt=few_shot_prompt)
+    # for q in ques:
+    #     db_chain.invoke({"query": q})
+    qns1 = db_chain.invoke({"query": query})
+
+
+if __name__ == "__main__":
+    tabs = ['employee', 'leave_application', 'wfh_application', 'employee_occupancy', 'department_type',
+            'issue_work_log',
+            'attendance_event', 'lunch_menu', 'leave_balance']
+    create_db_chain(tables=tabs, query="Who has not filled their logs today?")

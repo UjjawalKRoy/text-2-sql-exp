@@ -1,7 +1,8 @@
 from fastapi import FastAPI, HTTPException, status, Body, Response
 from pydantic import BaseModel
-
+from main import create_db_chain
 app = FastAPI()
+
 
 class UserQuery(BaseModel):
     user: str
@@ -9,9 +10,12 @@ class UserQuery(BaseModel):
     intent: str
     role: str
     tables: list[str]
+
+
 @app.get("/")
 async def root():
     return "The API is running!"
+
 
 @app.post("/ask")
 async def ask(user_query: UserQuery):
@@ -19,3 +23,4 @@ async def ask(user_query: UserQuery):
     query = user_query.query
     table_names = user_query.tables
     role = user_query.role
+    create_db_chain(tables=table_names, query=query)
