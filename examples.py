@@ -66,6 +66,12 @@ emp_profile_few_shots = [
         'Answer': "16"
     },
     {
+        'Question': "Whose birthday is it today?",
+        'SQLQuery': "SELECT employee_name, [dob] FROM TABLE WHERE DAY([dob]) = DAY(GETDATE()) AND MONTH([dob]) = MONTH(GETDATE())",
+        'SQLResult': "[(Khushali Patel,)]",
+        'Answer': "Khushali Patel"
+    },
+    {
         'Question': "Total strength of Mobile department",
         'SQLQuery': "SELECT COUNT(*) AS total_strength FROM employee_profile WHERE department_name = 'Mobile'",
         'SQLResult': "[(66,)]",
@@ -149,5 +155,11 @@ emp_profile_few_shots = [
         'SQLResult': "",
         'Answer': "None"
     },
+    {
+        'Question': "Who is on leave today?",
+        'SQLQuery': "SELECT e.first_name, e.last_name FROM employee e JOIN leave_application l ON e.id = l.employee_id WHERE l.from_date <= CURDATE() AND l.to_date >= CURDATE() AND l.leave_status = 2;",
+        'SQLResult': "[(Ujjawal, Roy,), (Siddhant, Pandey, )]",
+        'Answer': "Ujjawal Roy and Siddhant Pandey are on leave today."
+    }
 ]
 print(len(emp_profile_few_shots))

@@ -1,10 +1,10 @@
 from langchain.chains.sql_database.prompt import PROMPT_SUFFIX
-from langchain.embeddings import HuggingFaceEmbeddings
+from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain.prompts import FewShotPromptTemplate
 from langchain.prompts import SemanticSimilarityExampleSelector
 from langchain.prompts.prompt import PromptTemplate
 from langchain.utilities.sql_database import SQLDatabase
-from langchain.vectorstores import Chroma
+from langchain_community.vectorstores import Chroma
 from langchain_core.callbacks import CallbackManager, StreamingStdOutCallbackHandler
 from langchain_experimental.sql import SQLDatabaseChain
 from langchain_community.llms.llamacpp import LlamaCpp
@@ -32,7 +32,7 @@ llm = LlamaCpp(
     callback_manager=callback_manager
 )
 
-db = SQLDatabase.from_uri("mysql://root:password@localhost/mrms", include_tables=['employee_profile'])
+db = SQLDatabase.from_uri("mysql://root:password@localhost/mrms", include_tables=['employee', 'leave_application'])
 
 # print(db.table_info)
 embeddings = HuggingFaceEmbeddings(model_name='sentence-transformers/all-MiniLM-L6-v2')
