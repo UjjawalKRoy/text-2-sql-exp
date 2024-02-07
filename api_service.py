@@ -10,6 +10,7 @@ class UserQuery(BaseModel):
     intent: str
     role: str
     tables: list[str]
+    entities: list | None = None
 
 
 @app.get("/")
@@ -23,4 +24,4 @@ async def ask(user_query: UserQuery):
     query = user_query.query
     table_names = user_query.tables
     role = user_query.role
-    return create_db_chain(tables=table_names, query=f"{query} employee_code of user querying={user}")
+    return create_db_chain(tables=table_names, query=f"{query} employee_code of user querying={user}")["result"]
