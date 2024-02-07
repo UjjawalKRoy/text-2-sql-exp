@@ -5,9 +5,7 @@ from langchain.prompts import SemanticSimilarityExampleSelector
 from langchain.prompts.prompt import PromptTemplate
 from langchain.utilities.sql_database import SQLDatabase
 from langchain_community.vectorstores import Chroma
-from langchain_core.callbacks import CallbackManager, StreamingStdOutCallbackHandler
 from langchain_experimental.sql import SQLDatabaseChain
-from langchain_community.llms.llamacpp import LlamaCpp
 from langchain_google_genai import GoogleGenerativeAI
 
 import system_prompt
@@ -16,21 +14,23 @@ from ques import ques
 
 import langchain
 
-# langchain.verbose = True
+langchain.verbose = True
 
-# api_key = 'AIzaSyA5npGkRSAWoCt4P93ztBzl0o2lIk8GOnI'
-callback_manager = CallbackManager([StreamingStdOutCallbackHandler()])
-llm = LlamaCpp(
-    model_path="C:/Users/admin/.cache/lm-studio/models/TheBloke/nsql-llama-2-7B-GGUF/nsql-llama-2-7b.Q8_0.gguf",
-    n_ctx=8000,
-    n_gpu_layers=40,
-    n_threads=8,
-    n_batch=512,
-    max_tokens=200,
-    temperature=0.8,
-    top_p=0.1,
-    callback_manager=callback_manager
-)
+api_key = 'AIzaSyA5npGkRSAWoCt4P93ztBzl0o2lIk8GOnI'
+llm = GoogleGenerativeAI(model="models/text-bison-001", google_api_key=api_key)
+
+# callback_manager = CallbackManager([StreamingStdOutCallbackHandler()])
+# llm = LlamaCpp(
+#     model_path="C:/Users/admin/.cache/lm-studio/models/TheBloke/nsql-llama-2-7B-GGUF/nsql-llama-2-7b.Q8_0.gguf",
+#     n_ctx=8000,
+#     n_gpu_layers=40,
+#     n_threads=8,
+#     n_batch=512,
+#     max_tokens=200,
+#     temperature=0.8,
+#     top_p=0.1,
+#     callback_manager=callback_manager
+# )
 
 db = SQLDatabase.from_uri("mysql://root:password@localhost/mrms", include_tables=['employee', 'leave_application'])
 
