@@ -62,8 +62,10 @@ def create_db_chain(tables: list[str], query: str):
     # for q in ques:
     #     db_chain.invoke({"query": q})
     qns1 = db_chain.invoke({"query": query})
-
-    return qns1
+    res = qns1["result"]
+    if not res:
+        return None
+    return {"result": res}
 
 
 if __name__ == "__main__":
