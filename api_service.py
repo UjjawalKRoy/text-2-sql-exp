@@ -24,6 +24,8 @@ async def ask(user_query: UserQuery):
     query = user_query.query
     table_names = user_query.tables
     role = user_query.role
+    intent = user_query.intent
+    print(f"Query: {query} | Intent: {intent}")
     if role.lower() == "own":
         return create_db_chain(tables=table_names, query=f"{query} employee_code of user querying={user}")
     return create_db_chain(tables=table_names, query=query)
