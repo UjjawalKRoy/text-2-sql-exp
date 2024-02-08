@@ -7,7 +7,7 @@ from langchain.utilities.sql_database import SQLDatabase
 from langchain_community.vectorstores import Chroma
 from langchain_experimental.sql import SQLDatabaseChain
 from langchain_google_genai import GoogleGenerativeAI
-
+from langchain.chains import LLMChain
 import system_prompt
 from examples import emp_profile_few_shots
 from ques import ques
@@ -17,21 +17,16 @@ import langchain
 langchain.verbose = True
 
 api_key = 'AIzaSyA5npGkRSAWoCt4P93ztBzl0o2lIk8GOnI'
-llm = GoogleGenerativeAI(model="models/text-bison-001", google_api_key=api_key)
+llm = GoogleGenerativeAI(model="models/text-bison-001", google_api_key=api_key, temperature=0.1)
 
-# callback_manager = CallbackManager([StreamingStdOutCallbackHandler()])
-# llm = LlamaCpp(
-#     model_path="C:/Users/admin/.cache/lm-studio/models/TheBloke/nsql-llama-2-7B-GGUF/nsql-llama-2-7b.Q8_0.gguf",
-#     n_ctx=8000,
-#     n_gpu_layers=40,
-#     n_threads=8,
-#     n_batch=512,
-#     max_tokens=200,
-#     temperature=0.8,
-#     top_p=0.1,
-#     callback_manager=callback_manager
-# )
+responder_prompt = """"Your job is to rephrase the answer of User Question in tone of a helpful assistant without skipping any information.
 
+USER QUESTION:
+{query}
+ANSWER: {context}
+FINAL RESPONSE:
+"
+"""
 
 # print(db.table_info)
 embeddings = HuggingFaceEmbeddings(model_name='sentence-transformers/all-MiniLM-L6-v2')
@@ -54,6 +49,12 @@ few_shot_prompt = FewShotPromptTemplate(
     suffix=PROMPT_SUFFIX,
     input_variables=["input", "table_info", "top_k"],  # These variables are used in the prefix and suffix
 )
+final_prompt = PromptTemplate(input_variables=['context', 'query'], template=responder_prompt)
+final_chain = LLMChain(llm=llm, prompt=final_prompt)
+
+
+def respond(query: str, context: list):
+    return final_chain.predict(query=query, context=context)
 
 
 def create_db_chain(tables: list[str], query: str):
@@ -65,7 +66,9 @@ def create_db_chain(tables: list[str], query: str):
     res = qns1["result"]
     if not res:
         return None
-    return {"result": res}
+    result = respond(query=query, context=res)
+    print(result)
+    return {"result": result}
 
 
 if __name__ == "__main__":
