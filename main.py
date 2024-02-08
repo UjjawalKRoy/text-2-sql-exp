@@ -1,23 +1,24 @@
+import langchain
+from langchain.chains import LLMChain
 from langchain.chains.sql_database.prompt import PROMPT_SUFFIX
-from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain.prompts import FewShotPromptTemplate
 from langchain.prompts import SemanticSimilarityExampleSelector
 from langchain.prompts.prompt import PromptTemplate
 from langchain.utilities.sql_database import SQLDatabase
+from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain_community.vectorstores import Chroma
 from langchain_experimental.sql import SQLDatabaseChain
 from langchain_google_genai import GoogleGenerativeAI
-from langchain.chains import LLMChain
+
 import system_prompt
 from examples import emp_profile_few_shots
-from ques import ques
-
-import langchain
 
 langchain.verbose = True
 
-api_key = 'AIzaSyA5npGkRSAWoCt4P93ztBzl0o2lIk8GOnI'
-llm = GoogleGenerativeAI(model="models/text-bison-001", google_api_key=api_key, temperature=0.1)
+api_key = "AIzaSyA5npGkRSAWoCt4P93ztBzl0o2lIk8GOnI"
+llm = GoogleGenerativeAI(
+    model="models/text-bison-001", google_api_key=api_key, temperature=0.1
+)
 
 responder_prompt = """"Your job is to rephrase the answer of User Question in tone of a helpful assistant without skipping any information.
 
@@ -29,16 +30,23 @@ FINAL RESPONSE:
 """
 
 # print(db.table_info)
-embeddings = HuggingFaceEmbeddings(model_name='sentence-transformers/all-MiniLM-L6-v2')
+embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
 to_vectorize = [" ".join(example.values()) for example in emp_profile_few_shots]
-vectorstore = Chroma.from_texts(to_vectorize, embeddings, metadatas=emp_profile_few_shots)
+vectorstore = Chroma.from_texts(
+    to_vectorize, embeddings, metadatas=emp_profile_few_shots
+)
 example_selector = SemanticSimilarityExampleSelector(
     vectorstore=vectorstore,
     k=2,
 )
 
 example_prompt = PromptTemplate(
-    input_variables=["Question", "SQLQuery", "SQLResult", "Answer", ],
+    input_variables=[
+        "Question",
+        "SQLQuery",
+        "SQLResult",
+        "Answer",
+    ],
     template="\nQuestion: {Question}\nSQLQuery: {SQLQuery}\nSQLResult: {SQLResult}\nAnswer: {Answer}",
 )
 
@@ -47,19 +55,34 @@ few_shot_prompt = FewShotPromptTemplate(
     example_prompt=example_prompt,
     prefix=system_prompt.DEFAULT_PROMPT,
     suffix=PROMPT_SUFFIX,
-    input_variables=["input", "table_info", "top_k"],  # These variables are used in the prefix and suffix
+    input_variables=[
+        "input",
+        "table_info",
+        "top_k",
+    ],  # These variables are used in the prefix and suffix
 )
-final_prompt = PromptTemplate(input_variables=['context', 'query'], template=responder_prompt)
+final_prompt = PromptTemplate(
+    input_variables=["context", "query"], template=responder_prompt
+)
 final_chain = LLMChain(llm=llm, prompt=final_prompt)
 
 
 def respond(query: str, context: list):
-    return final_chain.predict(query=query, context=context)
+    p = final_prompt.format(query=query, context=context)
+    print(p)
+    try:
+        return final_chain.predict(query=query, context=context)
+    except:
+        return context
 
 
 def create_db_chain(tables: list[str], query: str):
-    db = SQLDatabase.from_uri("mysql://root:password@localhost/mrms", include_tables=tables)
-    db_chain = SQLDatabaseChain.from_llm(llm, db, verbose=True, prompt=few_shot_prompt, return_direct=True)
+    db = SQLDatabase.from_uri(
+        "mysql://root:password@localhost/mrms", include_tables=tables
+    )
+    db_chain = SQLDatabaseChain.from_llm(
+        llm, db, verbose=True, prompt=few_shot_prompt, return_direct=True
+    )
     # for q in ques:
     #     db_chain.invoke({"query": q})
     qns1 = db_chain.invoke({"query": query})
@@ -72,7 +95,15 @@ def create_db_chain(tables: list[str], query: str):
 
 
 if __name__ == "__main__":
-    tabs = ['employee', 'leave_application', 'wfh_application', 'employee_occupancy', 'department_type',
-            'issue_work_log',
-            'attendance_event', 'lunch_menu', 'leave_balance']
+    tabs = [
+        "employee",
+        "leave_application",
+        "wfh_application",
+        "employee_occupancy",
+        "department_type",
+        "issue_work_log",
+        "attendance_event",
+        "lunch_menu",
+        "leave_balance",
+    ]
     create_db_chain(tables=tabs, query="Who has not filled their logs today?")

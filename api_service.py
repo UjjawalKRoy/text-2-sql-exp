@@ -1,6 +1,10 @@
-from fastapi import FastAPI, HTTPException, status, Body, Response
+from typing import Optional
+
+from fastapi import FastAPI
 from pydantic import BaseModel
+
 from main import create_db_chain
+
 app = FastAPI()
 
 
@@ -9,7 +13,7 @@ class UserQuery(BaseModel):
     query: str
     intent: str
     role: str
-    tables: list[str]
+    tables: Optional[list[str]]
     entities: list | None = None
 
 
@@ -27,5 +31,7 @@ async def ask(user_query: UserQuery):
     intent = user_query.intent
     print(f"Query: {query} | Intent: {intent}")
     if role.lower() == "own":
-        return create_db_chain(tables=table_names, query=f"{query} employee_code of user querying={user}")
+        return create_db_chain(
+            tables=table_names, query=f"{query} employee_code of user querying={user}"
+        )
     return create_db_chain(tables=table_names, query=query)
