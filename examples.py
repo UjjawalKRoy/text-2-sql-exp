@@ -1,165 +1,5 @@
 emp_profile_few_shots = [
     {
-        "Question": "I need Vatsal Gamit's contact details?",
-        "SQLQuery": "SELECT email_id FROM employee_profile WHERE employee_name = 'Vatsal Gamit'",
-        "SQLResult": "[('vatsal.gamit@mailinator.com',)]",
-        "Answer": "vatsal.gamit@mailinator.com",
-    },
-    {
-        "Question": "How many leaves does Hasmukh Suthar have?",
-        "SQLQuery": "SELECT total_leave_balance FROM employee_profile WHERE employee_name = 'Hasmukh Suthar'",
-        "SQLResult": "[(10.0,)]",
-        "Answer": "10",
-    },
-    {
-        "Question": "How many people with more than 800 days of experience report to Samar Patel?",
-        "SQLQuery": "SELECT count(*) FROM employee_profile WHERE reporting_manager = 'Samar Patel' AND total_experience > 800",
-        "SQLResult": "[(3,)]",
-        "Answer": "3",
-    },
-    {
-        "Question": "List all people with more than 800 days of experience report to Samar Patel",
-        "SQLQuery": "SELECT employee_name, total_experience FROM employee_profile WHERE total_experience > 800 AND reporting_manager = 'Samar Patel'",
-        "SQLResult": "Beant Duggal, Anish Panchal, Dhruv Mevada",
-        "Answer": "3",
-    },
-    {
-        "Question": "Brief me about Beant Duggal",
-        "SQLQuery": "SELECT * FROM employee_profile WHERE employee_name = 'Beant Duggal'",
-        "SQLResult": "[(14, 'Beant Duggal', 'MI-160', 'beant.duggal@mailinator.com', datetime.datetime(1989, 2, 24, 0, 0), None, 'Sales', 'VP', 50.0, 'Samar Patel', 953)]",
-        "Answer": "Beant Duggal is a VP in Sales, with total experience of 953 days. He has been with the "
-        "company "
-        "for 838 days, and has a total leave balance of 50 days. His manager is Samar Patel.",
-    },
-    {
-        "Question": "How many people with more than 500 days of experience work under Mehul Rajput or Asha Rajput?",
-        "SQLQuery": "SELECT COUNT(*) FROM employee_profile WHERE reporting_manager IN ('Mehul Rajput', 'Asha Rajput') AND total_experience > 500",
-        "SQLResult": "[(6,)]",
-        "Answer": "6",
-    },
-    {
-        "Question": "How many years of experience does Ujjawal Roy have?",
-        "SQLQuery": "SELECT total_experience FROM employee_profile WHERE employee_name = 'Ujjawal Roy'",
-        "SQLResult": "[(137,)]",
-        "Answer": "137 days",
-    },
-    {
-        "Question": "Who is the reporting manager of Nency Patel?",
-        "SQLQuery": "SELECT reporting_manager FROM employee_profile WHERE employee_name = 'Nency Patel'",
-        "SQLResult": "[('Kumar Pal Nagar',)]",
-        "Answer": "Kumar Pal Nagar",
-    },
-    {
-        "Question": "Who is Tirth Shah?",
-        "SQLQuery": "SELECT * FROM employee_profile WHERE employee_name = 'Tirth Shah'",
-        "SQLResult": "[(53, 'Tirth Shah', 'MI-510', 'tirth.shah@mailinator.com', datetime.datetime(1999, 5, 28, 0, 0), None, 'Web', 'Associate Software Engineer', 23.5, 'Nilesh Patel', 793)]",
-        "Answer": "Tirth Shah is an Associate Software Engineer in the Web department. His employee code is "
-        "MI-510 "
-        "and his email address is tirth.shah@mailinator.com.",
-    },
-    {
-        "Question": "What is the average experience of employees working in the web department?",
-        "SQLQuery": "SELECT AVG(total_experience) FROM employee_profile WHERE department_name = 'Web'",
-        "SQLResult": "[(Decimal('635.1282'),)]",
-        "Answer": "635.1282",
-    },
-    {
-        "Question": "How many people work in marketing?",
-        "SQLQuery": "SELECT COUNT(*) FROM employee_profile WHERE department_name = 'Marketing'",
-        "SQLResult": "[(16,)]",
-        "Answer": "16",
-    },
-    {
-        "Question": "Whose birthday is it today?",
-        "SQLQuery": "SELECT employee_name, [dob] FROM TABLE WHERE DAY([dob]) = DAY(GETDATE()) AND MONTH([dob]) = MONTH(GETDATE())",
-        "SQLResult": "[(Khushali Patel,)]",
-        "Answer": "Khushali Patel",
-    },
-    {
-        "Question": "Total strength of Mobile department",
-        "SQLQuery": "SELECT COUNT(*) AS total_strength FROM employee_profile WHERE department_name = 'Mobile'",
-        "SQLResult": "[(66,)]",
-        "Answer": "66",
-    },
-    {
-        "Question": "Is Vismit Suvagya working in Mobile department",
-        "SQLQuery": "SELECT department_name FROM employee_profile WHERE employee_name='Vismit Suvagya'",
-        "SQLResult": "[('Web',)]",
-        "Answer": "no",
-    },
-    {
-        "Question": "What is the total strength of sales and marketing",
-        "SQLQuery": "SELECT count(employee_id) FROM employee_profile WHERE department_name = 'Sales' OR department_name = 'Marketing'",
-        "SQLResult": "[(41,)]",
-        "Answer": "41",
-    },
-    {
-        "Question": "List all employees under Mehul Rajput who have not filled their time sheet",
-        "SQLQuery": "SELECT employee_name FROM employee_profile WHERE reporting_manager = 'Mehul Rajput' AND timesheet_filling_status = 'not filled' LIMIT 5",
-        "SQLResult": "[('Mehul Rajput',), ('Samar Patel',), ('Kalpesh Thakar',), ('Asha Rajput',)]",
-        "Answer": "Mehul Rajput, Samar Patel, Kalpesh Thakar, Asha Rajput",
-    },
-    {
-        "Question": "Employees working under which reporting managers have not filled their time sheets",
-        "SQLQuery": "SELECT reporting_manager FROM employee_profile WHERE timesheet_filling_status = 'not filled'",
-        "SQLResult": "[('System Admin',), ('Mehul Rajput',), ('Mehul Rajput',), ('Mehul Rajput',), ('Mehul Rajput',), ('Bhumi Goklani',)]",
-        "Answer": "System Admin, Mehul Rajput, Bhumi Goklani",
-    },
-    {
-        "Question": "I need 5 devs who know mysql",
-        "SQLQuery": "SELECT employee_name FROM employee_profile WHERE employee_skill LIKE '%mysql%' LIMIT 5",
-        "SQLResult": "[('Rahul Gauswami',), ('Hitesh Darji',), ('Mohammadtufel Jerawala',), ('Kamalrajsinh Sodha',), ('Arati Bhadani',)]",
-        "Answer": "Rahul Gauswami, Hitesh Darji, Mohammadtufel Jerawala, Kamalrajsinh Sodha, Arati Bhadani",
-    },
-    {
-        "Question": "Is Krishna Thakkar skilled in python?",
-        "SQLQuery": "SELECT employee_skill FROM employee_profile WHERE employee_name = 'Krishna Thakkar'",
-        "SQLResult": "[('MongoDB, Data Analysis, FastAPI - Python,)]",
-        "Answer": "Yes",
-    },
-    {
-        "Question": "Which department does Ujjawal Roy works in?",
-        "SQLQuery": "SELECT department_name FROM employee_profile WHERE employee_name = 'Ujjawal Roy'",
-        "SQLResult": "[('Data Science & AI/ML',)]",
-        "Answer": "Data Science & AI/ML",
-    },
-    {
-        "Question": "Brief me about MI-516",
-        "SQLQuery": "SELECT * FROM employee_profile WHERE employee_code = 'MI-516'",
-        "SQLResult": "[('MI-516', 'Ujjawal Roy', 'ujjawal.roy@mailinator.com', datetime.datetime(1997, 12, 12, 0, 0), 'B+', None, 'https://github.com/UjjawalKRoy', 'Mindinventory', 'on probation', 'Data Science & AI/ML', 'Data Scientist', 0.0, 'Samar Patel', 138, 'Artificial Intelligence, Computer Vision, Neural Network Architectures, Python for Data Science CNN, LLM, LLM, 'filled')]",
-        "Answer": "Data Science & AI/ML",
-    },
-    {
-        "Question": "How many Python devs do we have?",
-        "SQLQuery": "SELECT COUNT(*) FROM employee_profile WHERE employee_skill LIKE '%Python%'",
-        "SQLResult": "[(9,)]",
-        "Answer": "9",
-    },
-    {
-        "Question": "Has Nency Patel filled her logs?",
-        "SQLQuery": "SELECT timesheet_filling_status FROM employee_profile WHERE employee_name = 'Nency Patel'",
-        "SQLResult": "[('filled',)]",
-        "Answer": "filled",
-    },
-    {
-        "Question": "Who is the CEO of MindInventory?",
-        "SQLQuery": "SELECT employee_name FROM employee_profile WHERE job_title = 'CEO' AND business_unit_name = 'MindInventory'",
-        "SQLResult": "[('Mehul Rajput',),]",
-        "Answer": "Mehul Rajput",
-    },
-    {
-        "Question": "I need 3 devs who are proficient in python and sql",
-        "SQLQuery": "SELECT employee_name FROM employee_profile WHERE employee_skill LIKE '%python%' AND employee_skill LIKE '%sql%' LIMIT 3",
-        "SQLResult": "[('Hasmukh Suthar',)]",
-        "Answer": "Hasmukh Suthar",
-    },
-    {
-        "Question": "Who all are in probation?",
-        "SQLQuery": "SELECT employee_name FROM employee_profile WHERE employment_status = 'on probation'",
-        "SQLResult": "",
-        "Answer": "None",
-    },
-    {
         "Question": "Who is on leave today?",
         "SQLQuery": "SELECT e.first_name, e.last_name FROM employee e JOIN leave_application l ON e.id = l.employee_id WHERE l.from_date <= CURDATE() AND l.to_date >= CURDATE() AND l.leave_status = 2;",
         "SQLResult": "[(Ujjawal, Roy,), (Siddhant, Pandey, )]",
@@ -187,18 +27,49 @@ emp_profile_few_shots = [
         "Question": "How many people are free for from each department?",
         "SQLQuery": "SELECT d.name AS department, COUNT(*) AS num_free_employees FROM employee e JOIN employee_occupancy o ON e.id = o.employee_id AND o.occupancy_status IN (0, 1) JOIN department_type d ON e.department_id = d.id GROUP BY d.id;",
         "SQLResult": "[('Design', 11), ('Mobile', 8), ('Game', 8), ('Web', 22), ('Business Analysis', 2), ('DevOps', 1), ('Management', 2)]",
-        "Answer": "There are 11 people from Design, 8 from Mobile, 8 from Game, 22 from Web, 2 from Business "
-        "Analysis, 1 from DevOps and 2 from management who are free today",
+        "Answer": "There are 11 people from Design, 8 from Mobile, 8 from Game, 22 from Web, 2 from Business Analysis, 1 from DevOps and 2 from management who are free today",
+    },
+    {
+        "Question": "Who all are fully free today?",
+        "SQLQuery": "SELECT e.first_name, e.last_name FROM employee e JOIN employee_occupancy o ON e.id = o.employee_id AND o.occupancy_status IN (0, 1) ORDER BY e.first_name;",
+        "SQLResult": "[('Aditya', 'Jani'), ('Archit', 'Patel'), ('Ebrahim', 'Sakir'), ('Fahad', 'Mansuri'), ('Honey', 'Chavda'), ('Jay', 'Soni'), ('Khetpal', 'Charan')]",
+        "Answer": "[('Aditya', 'Jani'), ('Archit', 'Patel'), ('Ebrahim', 'Sakir'), ('Fahad', 'Mansuri'), ('Honey', 'Chavda'), ('Jay', 'Soni'), ('Khetpal', 'Charan')]",
+    },
+    {
+        "Question": "How many employees are occupied or partially free today?",
+        "SQLQuery": "SELECT COUNT(*) FROM employee_occupancy o JOIN employee e ON e.id = o.employee_id WHERE o.occupancy_status IN (0, 3);",
+        "SQLResult": "[(59,)]",
+        "Answer": "Today, there are 59 employees who are occupied or partially free.",
+    },
+    {
+        "Question": "How many employees are occupied or partially free today from the Web department?",
+        "SQLQuery": "SELECT COUNT(*) FROM employee e JOIN employee_occupancy o ON e.id = o.employee_id AND o.occupancy_status IN (0, 1) JOIN department_type d ON e.department_id = d.id WHERE d.name LIKE '%Web%';",
+        "SQLResult": "[(22,)]",
+        "Answer": "There are 22 employees who are occupied or partially free today from the Web department.",
+    },
+    {
+        "Question": "Who are the managers of employees currently on notice?",
+        "SQLQuery": "SELECT DISTINCT m.first_name, m.last_name FROM employee e JOIN employee m ON e.reporting_to = m.id WHERE e.status = 3;",
+        "SQLResult": "[(Bipin,Mishra)]",
+        "Answer": "The managers of the employees currently on notice are: Bipin Mishra",
+    },
+    {
+        "Question": "Which department has the highest number of employees on probation?",
+        "SQLQuery": "SELECT d.name AS department, COUNT(*) AS num_on_probation FROM employee e JOIN department_type d ON e.department_id = d.id WHERE e.status = 1 GROUP BY d.id ORDER BY num_on_probation DESC LIMIT 1;",
+        "SQLResult": "[(Web,5)]",
+        "Answer": "The department with the highest number of employees on probation is department Web with 5 employees.",
+    },
+    {
+        "Question": "How many hours did Ankit Prajapati worked on 21th December 2023?",
+        "SQLQuery": "SELECT e.first_name, e.last_name, SUM(iwl.spent / 60) AS total_hours_worked FROM employee e JOIN issue_work_log iwl ON e.id = iwl.employee_id WHERE DATE(iwl.spent_date) = '2023-12-21' AND e.first_name = 'Ankit' AND e.last_name = 'Prajapati' GROUP BY e.id;",
+        "SQLResult": "[(Ankit ,Prajapati, 8)]",
+        "Answer": "Ankit worked for 8hrs on 21st of December 2023.",
     },
     {
         "Question": "Who did not fill the logs yesterday?",
         "SQLQuery": "select ae.employee_id, COUNT(*) AS count, ae.event_date_time, e.first_name, e.last_name from attendance_event ae JOIN employee e ON ae.employee_id = e.id LEFT JOIN issue_work_log iwl ON ae.employee_id = iwl.employee_id AND DATE(iwl.spent_date) = DATE_SUB(CURDATE(), INTERVAL 1 DAY) where DATE(ae.event_date_time) = DATE_SUB(CURDATE(), INTERVAL 1 DAY) AND ae.event_type = 0 AND iwl.employee_id IS null GROUP by ae.employee_id;",
         "SQLResult": "[('Mehul', 'Rajput'), ('Samar', 'Patel'), ('Kalpesh', 'Thakar'), ('Kiran', 'Malvi')]",
-        "Answer": "The following employee did not fill their daily log yesterday:"
-        "1. Mehul rajput"
-        "2. Samar Patel"
-        "3. Kalpesh Thakkar"
-        "4. Kiran Malvi",
+        "Answer": "The following employee did not fill their daily log yesterday: 1. Mehul rajput, 2. Samar Patel, 3. Kalpesh Thakkar, 4. Kiran Malvi",
     },
     {
         "Question": "Whats for lunch today?",
@@ -271,4 +142,5 @@ emp_profile_few_shots = [
         "Answer": "The following employees had their work anniversaries tomorrow:- Deep Bhavsar- Ashutosh Kaushik- Faiyaz Meghreji- Keval Senghani",
     },
 ]
+
 print(len(emp_profile_few_shots))
