@@ -13,7 +13,19 @@ emp_profile_few_shots = [
     },
     {
         "Question": "Who is on WFH today?",
-        "SQLQuery": "SELECT e.first_name, e.last_name FROM employee e JOIN wfh_application wfh ON e.id = wfh.employee_id WHERE wfh.from_date <= CURDATE() AND wfh.to_date >= CURDATE() AND wfh.status = 2;",
+        "SQLQuery": "SELECT e.employee_code, e.first_name, e.last_name FROM employee e JOIN wfh_application wfh ON e.id = wfh.employee_id WHERE wfh.from_date <= CURDATE() AND wfh.to_date >= CURDATE() AND wfh.status = 2;",
+        "SQLResult": "",
+        "Answer": "No one is on WFH today",
+    },
+    {
+        "Question": "How many devs are on work from home today?",
+        "SQLQuery": "SELECT COUNT(e.id) AS num_devs_on_wfh FROM employee e JOIN wfh_application wfh ON e.id = wfh.employee_id WHERE e.designation_id = 2 AND wfh.from_date <= CURDATE() AND wfh.to_date >= CURDATE() AND wfh.status = 2;",
+        "SQLResult": "",
+        "Answer": "No one is on WFH today",
+    },
+    {
+        "Question": "Which employees are on work form home?",
+        "SQLQuery": "SELECT e.employee_code, e.first_name, e.last_name FROM employee e JOIN wfh_application wfh ON e.id = wfh.employee_id WHERE wfh.from_date <= CURDATE() AND wfh.to_date >= CURDATE() AND wfh.status = 2;",
         "SQLResult": "",
         "Answer": "No one is on WFH today",
     },
@@ -72,7 +84,45 @@ emp_profile_few_shots = [
         "Answer": "The following employee did not fill their daily log yesterday: 1. Mehul rajput, 2. Samar Patel, 3. Kalpesh Thakkar, 4. Kiran Malvi",
     },
     {
+        "Question": "Who have not filled logs for the last two days?",
+        "SQLQuery": "SELECT e.first_name, e.last_name, e.employee_code FROM employee e LEFT JOIN attendance_event ae ON e.id = ae.employee_id LEFT JOIN issue_work_log iwl ON e.id = iwl.employee_id AND DATE(iwl.spent_date) = DATE_SUB(CURDATE(), INTERVAL 2 DAY) WHERE DATE(ae.event_date_time) = DATE_SUB(CURDATE(), INTERVAL 2 DAY) AND ae.event_type = 0 AND iwl.employee_id IS null GROUP BY e.employee_code ORDER BY e.first_name;",
+        "SQLResult": "[('Mehul', 'Rajput'), ('Samar', 'Patel'), ('Kalpesh', 'Thakar'), ('Kiran', 'Malvi')]",
+        "Answer": "The following employee did not fill their daily log in last 2 days: 1. Mehul rajput, 2. Samar Patel, 3. Kalpesh Thakkar, 4. Kiran Malvi",
+    },
+    {
+        "Question": "Which projects have less than 20hrs bucket hours today?",
+        "SQLQuery": "SELECT pb.id AS id, pb.name AS name, ( SELECT CAST( SUM(pcr.hours) AS UNSIGNED ) FROM project_change_request pcr WHERE pcr.project_id = pb.id ) AS total_hours, ( SELECT CAST( SUM(bb.billed_mins) AS UNSIGNED ) / 60 FROM bucket_billing bb WHERE bb.project_id = pb.id ) AS billed_hours, ( ( SELECT CAST( SUM(pcr.hours) AS UNSIGNED ) FROM project_change_request pcr WHERE pcr.project_id = pb.id ) - ( SELECT CAST( SUM(bb.billed_mins) AS UNSIGNED ) / 60 FROM bucket_billing bb WHERE bb.project_id = pb.id ) ) AS remain_hours FROM project_basic pb WHERE pb.type = 'Hourly bucket' AND (pb.status != 'Signed off' OR pb.status != 'Paused') AND ( ( SELECT CAST( SUM(pcr.hours) AS UNSIGNED ) FROM project_change_request pcr WHERE pcr.project_id = pb.id ) - ( SELECT CAST( SUM(bb.billed_mins) AS UNSIGNED ) / 60 FROM bucket_billing bb WHERE bb.project_id = pb.id ) ) < 20;",
+        "SQLResult": "",
+        "Answer": "",
+    },
+    {
+        "Question": "Show projects having less than 20 hours remaining in hourly buckets today.",
+        "SQLQuery": "SELECT pb.id AS id, pb.name AS name, ( SELECT CAST( SUM(pcr.hours) AS UNSIGNED ) FROM project_change_request pcr WHERE pcr.project_id = pb.id ) AS total_hours, ( SELECT CAST( SUM(bb.billed_mins) AS UNSIGNED ) / 60 FROM bucket_billing bb WHERE bb.project_id = pb.id ) AS billed_hours, ( ( SELECT CAST( SUM(pcr.hours) AS UNSIGNED ) FROM project_change_request pcr WHERE pcr.project_id = pb.id ) - ( SELECT CAST( SUM(bb.billed_mins) AS UNSIGNED ) / 60 FROM bucket_billing bb WHERE bb.project_id = pb.id ) ) AS remain_hours FROM project_basic pb WHERE pb.type = 'Hourly bucket' AND (pb.status != 'Signed off' OR pb.status != 'Paused') AND ( ( SELECT CAST( SUM(pcr.hours) AS UNSIGNED ) FROM project_change_request pcr WHERE pcr.project_id = pb.id ) - ( SELECT CAST( SUM(bb.billed_mins) AS UNSIGNED ) / 60 FROM bucket_billing bb WHERE bb.project_id = pb.id ) ) < 20;",
+        "SQLResult": "",
+        "Answer": "",
+    },
+    {
+        "Question": "Which projects do we need to send invoice to in hire today?",
+        "SQLQuery": "SELECT pb.id AS id, pb.name AS name, pr.est_release_date, e.first_name AS first_name, e.last_name AS last_name, DATEDIFF(pr.est_release_date, CURDATE()) AS remain_days FROM project_basic pb LEFT JOIN project_resource pr ON pr.project_id = pb.id LEFT JOIN employee e ON pr.employee_id = e.id WHERE pb.type = 'Dedicated' AND pr.billable = 1 AND (pb.status != 'Signed off' AND pb.status != 'Paused') AND DATEDIFF(pr.est_release_date, CURDATE()) <= 7 GROUP BY pr.project_id, pr.employee_id ORDER BY pb.name ASC;",
+        "SQLResult": "",
+        "Answer": "",
+    },
+    {
+        "Question": "Which projects require invoices for employees under hire within the next week?",
+        "SQLQuery": "SELECT pb.id AS project_id, pb.name AS project_name, pr.est_release_date, e.first_name, e.last_name, DATEDIFF(pr.est_release_date, CURDATE()) AS remain_days FROM project_basic pb LEFT JOIN project_resource pr ON pr.project_id = pb.id LEFT JOIN employee e ON pr.employee_id = e.id WHERE pb.type = 'Dedicated' AND pr.billable = 1 AND (pb.status != 'Signed off' AND pb.status != 'Paused') AND DATEDIFF(pr.est_release_date, CURDATE()) <= 7 GROUP BY pr.project_id, pr.employee_id ORDER BY pb.name ASC;",
+        "SQLResult": "",
+        "Answer": "",
+    },
+    {
         "Question": "Whats for lunch today?",
+        "SQLQuery": "SELECT menu FROM lunch_menu LIMIT 1;",
+        "SQLResult": "[('<p>Refill your plate again if you want but please do not waste food "
+        "🙏🏻😇</p><p><strong><u>WEEKLY FOOD MENU</u></strong></p><ul><li><strong>Monday</strong></li"
+        "></ul><ol type='1'><li>Flawer vatana tameta </li><li>White chaula </li><li>Magani...',)]",
+        "Answer": "",
+    },
+    {
+        "Question": "Whats for lunch tomorrow?",
         "SQLQuery": "SELECT menu FROM lunch_menu LIMIT 1;",
         "SQLResult": "[('<p>Refill your plate again if you want but please do not waste food "
         "🙏🏻😇</p><p><strong><u>WEEKLY FOOD MENU</u></strong></p><ul><li><strong>Monday</strong></li"
