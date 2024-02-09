@@ -14,7 +14,7 @@ class UserQuery(BaseModel):
     intent: str
     role: str
     tables: Optional[list[str]]
-    entities: list | None = None
+    entities: Optional[list]
 
 
 @app.get("/")

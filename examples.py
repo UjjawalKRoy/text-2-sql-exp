@@ -6,6 +6,12 @@ emp_profile_few_shots = [
         "Answer": "Ujjawal Roy and Siddhant Pandey are on leave today.",
     },
     {
+        "Question": "Who all are on leave today?",
+        "SQLQuery": "SELECT e.first_name, e.last_name FROM employee e JOIN leave_application l ON e.id = l.employee_id WHERE l.from_date <= CURDATE() AND l.to_date >= CURDATE() AND l.leave_status = 2;",
+        "SQLResult": "[(Ujjawal, Roy,), (Siddhant, Pandey, )]",
+        "Answer": "Ujjawal Roy and Siddhant Pandey are on leave today.",
+    },
+    {
         "Question": "Who is on leave this week?",
         "SQLQuery": "SELECT e.first_name, e.last_name FROM employee e JOIN leave_application l ON e.id = l.employee_id WHERE l.from_date BETWEEN DATE_SUB(CURDATE(), INTERVAL WEEKDAY(CURDATE()) DAY) AND DATE_ADD(DATE_SUB(CURDATE(), INTERVAL WEEKDAY(CURDATE()) DAY), INTERVAL 7 DAY) AND   l.to_date   BETWEEN DATE_SUB(CURDATE(), INTERVAL WEEKDAY(CURDATE()) DAY) AND DATE_ADD(DATE_SUB(CURDATE(), INTERVAL WEEKDAY(CURDATE()) DAY), INTERVAL 7 DAY) AND    l.leave_status =2;",
         "SQLResult": "[(Ujjawal, Roy,), (Siddhant, Pandey, ), (Vatsal, Gamit, )]",
