@@ -17,7 +17,7 @@ langchain.verbose = True
 
 api_key = "AIzaSyA5npGkRSAWoCt4P93ztBzl0o2lIk8GOnI"
 llm = GoogleGenerativeAI(
-    model="models/text-bison-001", google_api_key=api_key, temperature=0.3
+    model="models/text-bison-001", google_api_key=api_key, temperature=0.1
 )
 
 responder_prompt = """"Your job is to rephrase the answer of User Question in tone of a helpful assistant without skipping any information.  If the answer contains just numbers/dates then format it in a human like tone.
@@ -30,7 +30,7 @@ FINAL RESPONSE:
 """
 
 # print(db.table_info)
-embeddings = HuggingFaceEmbeddings(model_name="intfloat/e5-large-v2")
+embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
 to_vectorize = [" ".join(example.values()) for example in emp_profile_few_shots]
 vectorstore = Chroma.from_texts(
     to_vectorize, embeddings, metadatas=emp_profile_few_shots

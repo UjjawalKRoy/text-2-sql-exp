@@ -197,6 +197,24 @@ emp_profile_few_shots = [
         "SQLResult": "[('MI-354', 'Deep', 'Bhavsar'), ('MI-512', 'Ashutosh', 'Kaushik'), ('MI-197', 'Faiyaz','Meghreji'), ('MI-243', 'Keval', 'Senghani')]",
         "Answer": "The following employees had their work anniversaries tomorrow:- Deep Bhavsar- Ashutosh Kaushik- Faiyaz Meghreji- Keval Senghani",
     },
+    {
+        "Question": "Need b positive blood group",
+        "SQLQuery": "SELECT e.employee_code, e.first_name, e.last_name FROM employee e WHERE e.blood_group = 'B+';",
+        "SQLResult": "[('MI-354', 'Deep', 'Bhavsar'), ('MI-512', 'Ashutosh', 'Kaushik'), ('MI-197', 'Faiyaz','Meghreji'), ('MI-243', 'Keval', 'Senghani')]",
+        "Answer": "The following employees have B+ blood group:- Deep Bhavsar- Ashutosh Kaushik- Faiyaz Meghreji- Keval Senghani",
+    },
+    {
+        "Question": "Who is reporting manager of Ujjawal Roy?",
+        "SQLQuery": "SELECT m.first_name AS manager_first_name, m.last_name AS manager_last_name FROM employee e JOIN employee m ON e.reporting_to = m.id WHERE e.first_name = 'Ujjawal' AND e.last_name = 'Roy';",
+        "SQLResult": "[('Samar', 'Patel')]",
+        "Answer": "Ujjawal Roy reports to Samar Patel",
+    },
+    {
+        "Question": "Who all work under Samar Patel?",
+        "SQLQuery": "SELECT e.first_name, e.last_name FROM employee e WHERE e.reporting_to = (SELECT id FROM employee WHERE first_name = 'Samar' AND last_name = 'Patel');",
+        "SQLResult": "[('Aditya', 'Jani'), ('Archit', 'Patel')]",
+        "Answer": "Employees who work under Samar Patel are Aditya Jani and Archit Patel.",
+    },
 ]
 
 print(len(emp_profile_few_shots))
