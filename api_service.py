@@ -2,7 +2,7 @@ from typing import Optional
 from fastapi import FastAPI
 from pydantic import BaseModel
 
-from main import create_db_chain, logger
+from main_local import create_db_chain, logger
 
 app = FastAPI()
 

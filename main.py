@@ -26,13 +26,12 @@ llm = GoogleGenerativeAI(
     model="models/text-bison-001", google_api_key=api_key, temperature=0.1
 )
 
-responder_prompt = """"Your job is to rephrase the answer of User Question in tone of a helpful assistant without skipping any information.  If the answer contains just numbers/dates then format it in a human like tone.
+responder_prompt = """Your job is to rephrase the answer of User Question in tone of a helpful assistant without skipping any information.  If the answer contains just numbers/dates then format it in a human like tone.
 
 USER QUESTION:
 {query}
 ANSWER: {context}
 FINAL RESPONSE:
-"
 """
 
 # print(db.table_info)

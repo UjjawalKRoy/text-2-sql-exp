@@ -1,4 +1,9 @@
+import datetime
+
 import langchain
+from langchain.callbacks import FileCallbackHandler
+from langchain.chains import LLMChain
+from loguru import logger
 from langchain.chains.sql_database.prompt import PROMPT_SUFFIX
 from langchain.prompts import FewShotPromptTemplate
 from langchain.prompts import SemanticSimilarityExampleSelector
@@ -13,10 +18,24 @@ from langchain_experimental.sql import SQLDatabaseChain
 import system_prompt
 from examples import emp_profile_few_shots
 
+logfile = "output.log"
+
+logger.add(logfile, colorize=True, enqueue=True)
+handler = FileCallbackHandler(logfile)
+
 langchain.verbose = True
 
-# api_key = 'AIzaSyA5npGkRSAWoCt4P93ztBzl0o2lIk8GOnI'
-# llm = GoogleGenerativeAI(model="models/text-bison-001", google_api_key=api_key)
+
+responder_prompt = """Your job is to rephrase the answer of User Question in tone of a helpful assistant without 
+skipping any information.  If the answer contains just numbers/dates then format it in a human like tone.
+Remember:
+Today's Date = 
+
+USER QUESTION:
+{query}
+ANSWER: {context}
+FINAL RESPONSE:
+"""
 
 callback_manager = CallbackManager([StreamingStdOutCallbackHandler()])
 llm = LlamaCpp(
@@ -31,7 +50,6 @@ llm = LlamaCpp(
     callback_manager=callback_manager,
 )
 
-
 # print(db.table_info)
 embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
 to_vectorize = [" ".join(example.values()) for example in emp_profile_few_shots]
@@ -42,7 +60,7 @@ vectorstore = Chroma.from_texts(
 # docs = vectorstore.get_relevant_documents(query)
 example_selector = SemanticSimilarityExampleSelector(
     vectorstore=vectorstore,
-    k=1,
+    k=2,
 )
 
 example_prompt = PromptTemplate(
@@ -66,6 +84,21 @@ few_shot_prompt = FewShotPromptTemplate(
         "top_k",
     ],  # These variables are used in the prefix and suffix
 )
+final_prompt = PromptTemplate(
+    input_variables=["context", "query"], template=responder_prompt
+)
+final_chain = LLMChain(llm=llm, prompt=final_prompt, callbacks=[handler])
+
+
+def respond(query: str, context: list):
+    p = final_prompt.format(query=query, context=context)
+    print(p)
+    try:
+        ans = final_chain.predict(query=query, context=context)
+        logger.info(ans)
+        return ans
+    except:
+        return context
 
 
 def create_db_chain(tables: list[str], query: str):
@@ -73,15 +106,27 @@ def create_db_chain(tables: list[str], query: str):
         "mysql://root:password@localhost/mrms", include_tables=tables
     )
     db_chain = SQLDatabaseChain.from_llm(
-        llm, db, verbose=True, prompt=few_shot_prompt, return_direct=True
+        llm,
+        db,
+        verbose=True,
+        prompt=few_shot_prompt,
+        return_direct=True,
+        callbacks=[handler],
     )
     # for q in ques:
     #     db_chain.invoke({"query": q})
-    qns1 = db_chain.invoke({"query": query})
+    try:
+        qns1 = db_chain.invoke({"query": query})
+    except Exception as e:
+        logger.info(e)
+        qns1 = {"result": ["Sorry, I Could not fetch any data at this moment..."]}
     res = qns1["result"]
+    logger.info(res)
     if not res:
         return None
-    return {"result": res}
+    result = respond(query=query, context=res)
+    print(result)
+    return {"result": result}
 
 
 if __name__ == "__main__":
