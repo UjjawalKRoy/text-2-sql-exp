@@ -119,7 +119,7 @@ def create_db_chain(tables: list[str], query: str):
         qns1 = db_chain.invoke({"query": query})
     except Exception as e:
         logger.info(e)
-        qns1 = {"result": ["Sorry, I Could not fetch any data at this moment..."]}
+        qns1 = {"result": ["Sorry, I could not fetch any data at this moment..."]}
     res = qns1["result"]
     logger.info(res)
     if not res:

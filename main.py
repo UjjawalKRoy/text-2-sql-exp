@@ -25,7 +25,7 @@ api_key = "AIzaSyA5npGkRSAWoCt4P93ztBzl0o2lIk8GOnI"
 llm = GoogleGenerativeAI(
     model="models/text-bison-001", google_api_key=api_key, temperature=0.1
 )
-
+# datetime = datetime.ti
 responder_prompt = """Your job is to rephrase the answer of User Question in tone of a helpful assistant without skipping any information.  If the answer contains just numbers/dates then format it in a human like tone.
 
 USER QUESTION:
@@ -97,7 +97,11 @@ def create_db_chain(tables: list[str], query: str):
     )
     # for q in ques:
     #     db_chain.invoke({"query": q})
-    qns1 = db_chain.invoke({"query": query})
+    try:
+        qns1 = db_chain.invoke({"query": query})
+    except Exception as e:
+        logger.info(e)
+        qns1 = {"result": ["Sorry, I could not fetch any data at this moment..."]}
     res = qns1["result"]
     logger.info(res)
     if not res:
