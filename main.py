@@ -1,5 +1,7 @@
 import langchain
+from loguru import logger
 from langchain.chains import LLMChain
+from langchain.callbacks import FileCallbackHandler
 from langchain.chains.sql_database.prompt import PROMPT_SUFFIX
 from langchain.prompts import FewShotPromptTemplate
 from langchain.prompts import SemanticSimilarityExampleSelector
@@ -13,6 +15,10 @@ from langchain_google_genai import GoogleGenerativeAI
 import system_prompt
 from examples import emp_profile_few_shots
 
+logfile = "output.log"
+
+logger.add(logfile, colorize=True, enqueue=True)
+handler = FileCallbackHandler(logfile)
 langchain.verbose = True
 
 api_key = "AIzaSyA5npGkRSAWoCt4P93ztBzl0o2lIk8GOnI"
@@ -64,14 +70,16 @@ few_shot_prompt = FewShotPromptTemplate(
 final_prompt = PromptTemplate(
     input_variables=["context", "query"], template=responder_prompt
 )
-final_chain = LLMChain(llm=llm, prompt=final_prompt)
+final_chain = LLMChain(llm=llm, prompt=final_prompt, callbacks=[handler])
 
 
 def respond(query: str, context: list):
     p = final_prompt.format(query=query, context=context)
     print(p)
     try:
-        return final_chain.predict(query=query, context=context)
+        ans = final_chain.predict(query=query, context=context)
+        logger.info(ans)
+        return ans
     except:
         return context
 
@@ -81,12 +89,18 @@ def create_db_chain(tables: list[str], query: str):
         "mysql://root:password@localhost/mrms", include_tables=tables
     )
     db_chain = SQLDatabaseChain.from_llm(
-        llm, db, verbose=True, prompt=few_shot_prompt, return_direct=True
+        llm,
+        db,
+        verbose=True,
+        prompt=few_shot_prompt,
+        return_direct=True,
+        callbacks=[handler],
     )
     # for q in ques:
     #     db_chain.invoke({"query": q})
     qns1 = db_chain.invoke({"query": query})
     res = qns1["result"]
+    logger.info(res)
     if not res:
         return None
     result = respond(query=query, context=res)

@@ -1,9 +1,8 @@
 from typing import Optional
-
 from fastapi import FastAPI
 from pydantic import BaseModel
 
-from main import create_db_chain
+from main import create_db_chain, logger
 
 app = FastAPI()
 
@@ -30,6 +29,7 @@ async def ask(user_query: UserQuery):
     role = user_query.role
     intent = user_query.intent
     print(f"Query: {query} | Intent: {intent}")
+    logger.info(f"Query: {query} | Intent: {intent}")
     if role.lower() == "own":
         return create_db_chain(
             tables=table_names, query=f"{query} employee_code of user querying={user}"
