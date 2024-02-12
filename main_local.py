@@ -28,8 +28,6 @@ langchain.verbose = True
 
 responder_prompt = """Your job is to rephrase the answer of User Question in tone of a helpful assistant without 
 skipping any information.  If the answer contains just numbers/dates then format it in a human like tone.
-Remember:
-Today's Date = 
 
 USER QUESTION:
 {query}
