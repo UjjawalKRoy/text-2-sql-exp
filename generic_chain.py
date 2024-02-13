@@ -3,7 +3,7 @@ from langchain.chains import LLMChain
 from langchain_core.prompts import PromptTemplate
 from loguru import logger
 
-from main_local import llm
+from main import llm
 
 logfile = "output.log"
 

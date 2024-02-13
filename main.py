@@ -35,7 +35,7 @@ FINAL RESPONSE:
 """
 
 # print(db.table_info)
-embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
+embeddings = HuggingFaceEmbeddings(model_name="WhereIsAI/UAE-Large-V1")
 to_vectorize = [" ".join(example.values()) for example in emp_profile_few_shots]
 vectorstore = Chroma.from_texts(
     to_vectorize, embeddings, metadatas=emp_profile_few_shots
