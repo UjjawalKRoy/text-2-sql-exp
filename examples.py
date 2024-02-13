@@ -1,165 +1,280 @@
 emp_profile_few_shots = [
     {
-        'Question': "I need Vatsal Gamit's contact details?",
-        'SQLQuery': "SELECT email_id FROM employee_profile WHERE employee_name = 'Vatsal Gamit'",
-        'SQLResult': "[('vatsal.gamit@mailinator.com',)]",
-        'Answer': "vatsal.gamit@mailinator.com"
+        "Question": "Who is on leave today?",
+        "SQLQuery": "SELECT e.first_name, e.last_name FROM employee e JOIN leave_application l ON e.id = l.employee_id WHERE l.from_date <= CURDATE() AND l.to_date >= CURDATE() AND l.leave_status = 2;",
+        "SQLResult": "",
+        "Answer": "",
     },
     {
-        'Question': "How many leaves does Hasmukh Suthar have?",
-        'SQLQuery': "SELECT total_leave_balance FROM employee_profile WHERE employee_name = 'Hasmukh Suthar'",
-        'SQLResult': "[(10.0,)]",
-        'Answer': "10"
+        "Question": "Who all are on leave today?",
+        "SQLQuery": "SELECT e.first_name, e.last_name FROM employee e JOIN leave_application l ON e.id = l.employee_id WHERE l.from_date <= CURDATE() AND l.to_date >= CURDATE() AND l.leave_status = 2;",
+        "SQLResult": "",
+        "Answer": "",
     },
     {
-        'Question': "How many people with more than 800 days of experience report to Samar Patel?",
-        'SQLQuery': "SELECT count(*) FROM employee_profile WHERE reporting_manager = 'Samar Patel' AND total_experience > 800",
-        'SQLResult': "[(3,)]",
-        'Answer': "3"
+        "Question": "Who is on leave this week?",
+        "SQLQuery": "SELECT e.first_name, e.last_name FROM employee e JOIN leave_application l ON e.id = l.employee_id WHERE l.from_date BETWEEN DATE_SUB(CURDATE(), INTERVAL WEEKDAY(CURDATE()) DAY) AND DATE_ADD(DATE_SUB(CURDATE(), INTERVAL WEEKDAY(CURDATE()) DAY), INTERVAL 7 DAY) AND   l.to_date   BETWEEN DATE_SUB(CURDATE(), INTERVAL WEEKDAY(CURDATE()) DAY) AND DATE_ADD(DATE_SUB(CURDATE(), INTERVAL WEEKDAY(CURDATE()) DAY), INTERVAL 7 DAY) AND    l.leave_status =2;",
+        "SQLResult": "",
+        "Answer": "",
     },
     {
-        'Question': "List all people with more than 800 days of experience report to Samar Patel",
-        'SQLQuery': "SELECT employee_name, total_experience FROM employee_profile WHERE total_experience > 800 AND reporting_manager = 'Samar Patel'",
-        'SQLResult': "Beant Duggal, Anish Panchal, Dhruv Mevada",
-        'Answer': "3"
+        "Question": "Who is on WFH today?",
+        "SQLQuery": "SELECT e.employee_code, e.first_name, e.last_name FROM employee e JOIN wfh_application wfh ON e.id = wfh.employee_id WHERE wfh.from_date <= CURDATE() AND wfh.to_date >= CURDATE() AND wfh.status = 2;",
+        "SQLResult": "",
+        "Answer": "",
     },
     {
-        'Question': "Brief me about Beant Duggal",
-        'SQLQuery': "SELECT * FROM employee_profile WHERE employee_name = 'Beant Duggal'",
-        'SQLResult': "[(14, 'Beant Duggal', 'MI-160', 'beant.duggal@mailinator.com', datetime.datetime(1989, 2, 24, 0, 0), None, 'Sales', 'VP', 50.0, 'Samar Patel', 953)]",
-        'Answer': "Beant Duggal is a VP in Sales, with total experience of 953 days. He has been with the company for 838 days, and has a total leave balance of 50 days. His manager is Samar Patel."
+        "Question": "How many devs are on work from home today?",
+        "SQLQuery": "SELECT COUNT(e.id) AS num_devs_on_wfh FROM employee e JOIN wfh_application wfh ON e.id = wfh.employee_id WHERE e.designation_id = 2 AND wfh.from_date <= CURDATE() AND wfh.to_date >= CURDATE() AND wfh.status = 2;",
+        "SQLResult": "",
+        "Answer": "",
     },
     {
-        'Question': "How many people with more than 500 days of experience work under Mehul Rajput or Asha Rajput?",
-        'SQLQuery': "SELECT COUNT(*) FROM employee_profile WHERE reporting_manager IN ('Mehul Rajput', 'Asha Rajput') AND total_experience > 500",
-        'SQLResult': "[(6,)]",
-        'Answer': "6"
+        "Question": "Which employees are on work form home?",
+        "SQLQuery": "SELECT e.employee_code, e.first_name, e.last_name FROM employee e JOIN wfh_application wfh ON e.id = wfh.employee_id WHERE wfh.from_date <= CURDATE() AND wfh.to_date >= CURDATE() AND wfh.status = 2;",
+        "SQLResult": "",
+        "Answer": "",
     },
     {
-        'Question': "How many years of experience does Ujjawal Roy have?",
-        'SQLQuery': "SELECT total_experience FROM employee_profile WHERE employee_name = 'Ujjawal Roy'",
-        'SQLResult': "[(137,)]",
-        'Answer': "137 days"
+        "Question": "Who is on WFH this week?",
+        "SQLQuery": "SELECT e.first_name, e.last_name FROM employee e JOIN wfh_application wfh ON e.id = wfh.employee_id WHERE wfh.from_date BETWEEN DATE_SUB(CURDATE(), INTERVAL WEEKDAY(CURDATE()) DAY) AND DATE_ADD(DATE_SUB(CURDATE(), INTERVAL WEEKDAY(CURDATE()) DAY), INTERVAL 7 DAY) AND   wfh.to_date   BETWEEN DATE_SUB(CURDATE(), INTERVAL WEEKDAY(CURDATE()) DAY) AND DATE_ADD(DATE_SUB(CURDATE(), INTERVAL WEEKDAY(CURDATE()) DAY), INTERVAL 7 DAY) AND   wfh.status =2;",
+        "SQLResult": "",
+        "Answer": "",
     },
     {
-        'Question': "Who is the reporting manager of Nency Patel?",
-        'SQLQuery': "SELECT reporting_manager FROM employee_profile WHERE employee_name = 'Nency Patel'",
-        'SQLResult': "[('Kumar Pal Nagar',)]",
-        'Answer': "Kumar Pal Nagar"
+        "Question": "List all employees who are working from home this week",
+        "SQLQuery": "SELECT e.first_name, e.last_name FROM employee e JOIN wfh_application wfh ON e.id = wfh.employee_id WHERE wfh.from_date BETWEEN DATE_SUB(CURDATE(), INTERVAL WEEKDAY(CURDATE()) DAY) AND DATE_ADD(DATE_SUB(CURDATE(), INTERVAL WEEKDAY(CURDATE()) DAY), INTERVAL 7 DAY) AND   wfh.to_date   BETWEEN DATE_SUB(CURDATE(), INTERVAL WEEKDAY(CURDATE()) DAY) AND DATE_ADD(DATE_SUB(CURDATE(), INTERVAL WEEKDAY(CURDATE()) DAY), INTERVAL 7 DAY) AND   wfh.status =2;",
+        "SQLResult": "",
+        "Answer": "",
     },
     {
-        'Question': "Who is Tirth Shah?",
-        'SQLQuery': "SELECT * FROM employee_profile WHERE employee_name = 'Tirth Shah'",
-        'SQLResult': "[(53, 'Tirth Shah', 'MI-510', 'tirth.shah@mailinator.com', datetime.datetime(1999, 5, 28, 0, 0), None, 'Web', 'Associate Software Engineer', 23.5, 'Nilesh Patel', 793)]",
-        'Answer': "Tirth Shah is an Associate Software Engineer in the Web department. His employee code is MI-510 and his email address is tirth.shah@mailinator.com."
+        "Question": "How many people are free for from each department?",
+        "SQLQuery": "SELECT d.name AS department, COUNT(*) AS num_free_employees FROM employee e JOIN employee_occupancy o ON e.id = o.employee_id AND o.occupancy_status IN (0, 1) JOIN department_type d ON e.department_id = d.id GROUP BY d.id;",
+        "SQLResult": "",
+        "Answer": "",
     },
     {
-        'Question': "What is the average experience of employees working in the web department?",
-        'SQLQuery': "SELECT AVG(total_experience) FROM employee_profile WHERE department_name = 'Web'",
-        'SQLResult': "[(Decimal('635.1282'),)]",
-        'Answer': "635.1282"
+        "Question": "Who all are fully free today?",
+        "SQLQuery": "SELECT e.first_name, e.last_name FROM employee e JOIN employee_occupancy o ON e.id = o.employee_id AND o.occupancy_status IN (0, 1) ORDER BY e.first_name;",
+        "SQLResult": "",
+        "Answer": "",
     },
     {
-        'Question': "How many people work in marketing?",
-        'SQLQuery': "SELECT COUNT(*) FROM employee_profile WHERE department_name = 'Marketing'",
-        'SQLResult': "[(16,)]",
-        'Answer': "16"
+        "Question": "How many employees are occupied or partially free today?",
+        "SQLQuery": "SELECT COUNT(*) FROM employee_occupancy o JOIN employee e ON e.id = o.employee_id WHERE o.occupancy_status IN (0, 3);",
+        "SQLResult": "",
+        "Answer": "",
     },
     {
-        'Question': "Whose birthday is it today?",
-        'SQLQuery': "SELECT employee_name, [dob] FROM TABLE WHERE DAY([dob]) = DAY(GETDATE()) AND MONTH([dob]) = MONTH(GETDATE())",
-        'SQLResult': "[(Khushali Patel,)]",
-        'Answer': "Khushali Patel"
+        "Question": "How many employees are occupied or partially free today from the Web department?",
+        "SQLQuery": "SELECT COUNT(*) FROM employee e JOIN employee_occupancy o ON e.id = o.employee_id AND o.occupancy_status IN (0, 3) JOIN department_type d ON e.department_id = d.id WHERE d.name LIKE '%Web%';",
+        "SQLResult": "",
+        "Answer": "",
     },
     {
-        'Question': "Total strength of Mobile department",
-        'SQLQuery': "SELECT COUNT(*) AS total_strength FROM employee_profile WHERE department_name = 'Mobile'",
-        'SQLResult': "[(66,)]",
-        'Answer': "66"
+        "Question": "List all employees who are free in the Mobile team?",
+        "SQLQuery": "SELECT COUNT(*) FROM employee e JOIN employee_occupancy o ON e.id = o.employee_id AND o.occupancy_status IN (0, 1) JOIN department_type d ON e.department_id = d.id WHERE d.name LIKE '%Mobile%';",
+        "SQLResult": "",
+        "Answer": "",
     },
     {
-        'Question': "Is Vismit Suvagya working in Mobile department",
-        'SQLQuery': "SELECT department_name FROM employee_profile WHERE employee_name='Vismit Suvagya'",
-        'SQLResult': "[('Web',)]",
-        'Answer': "no"
+        "Question": "Who are the managers of employees currently on notice?",
+        "SQLQuery": "SELECT DISTINCT m.first_name, m.last_name FROM employee e JOIN employee m ON e.reporting_to = m.id WHERE e.status = 3;",
+        "SQLResult": "",
+        "Answer": "",
     },
     {
-        'Question': "What is the total strength of sales and marketing",
-        'SQLQuery': "SELECT count(employee_id) FROM employee_profile WHERE department_name = 'Sales' OR department_name = 'Marketing'",
-        'SQLResult': "[(41,)]",
-        'Answer': "41"
+        "Question": "How many people came late today?",
+        "SQLQuery": "SELECT COUNT(DISTINCT ae.employee_id) AS came_late_today FROM attendance_event ae LEFT JOIN ( SELECT employee_id FROM attendance_event WHERE event_type = 0 AND DATE(event_date_time) = CURDATE() AND TIME(event_date_time) <= '10:30:00' ) AS early_entries ON ae.employee_id = early_entries.employee_id WHERE ae.event_type = 0 AND DATE(ae.event_date_time) = CURDATE() AND TIME(ae.event_date_time) > '10:30:00' AND early_entries.employee_id IS NULL;",
+        "SQLResult": "",
+        "Answer": "",
     },
     {
-        'Question': "List all employees under Mehul Rajput who have not filled their time sheet",
-        'SQLQuery': "SELECT employee_name FROM employee_profile WHERE reporting_manager = 'Mehul Rajput' AND timesheet_filling_status = 'not filled' LIMIT 5",
-        'SQLResult': "[('Mehul Rajput',), ('Samar Patel',), ('Kalpesh Thakar',), ('Asha Rajput',)]",
-        'Answer': "Mehul Rajput, Samar Patel, Kalpesh Thakar, Asha Rajput"
+        "Question": "Which department has the highest number of employees on probation?",
+        "SQLQuery": "SELECT d.name AS department, COUNT(*) AS num_on_probation FROM employee e JOIN department_type d ON e.department_id = d.id WHERE e.status = 1 GROUP BY d.id ORDER BY num_on_probation DESC LIMIT 1;",
+        "SQLResult": "",
+        "Answer": "",
     },
     {
-        'Question': "Employees working under which reporting managers have not filled their time sheets",
-        'SQLQuery': "SELECT reporting_manager FROM employee_profile WHERE timesheet_filling_status = 'not filled'",
-        'SQLResult': "[('System Admin',), ('Mehul Rajput',), ('Mehul Rajput',), ('Mehul Rajput',), ('Mehul Rajput',), ('Bhumi Goklani',)]",
-        'Answer': "System Admin, Mehul Rajput, Bhumi Goklani"
+        "Question": "How many hours did Ankit Prajapati worked on 21th December 2023?",
+        "SQLQuery": "SELECT e.first_name, e.last_name, SUM(iwl.spent / 60) AS total_hours_worked FROM employee e JOIN issue_work_log iwl ON e.id = iwl.employee_id WHERE DATE(iwl.spent_date) = '2023-12-21' AND e.first_name = 'Ankit' AND e.last_name = 'Prajapati' GROUP BY e.id;",
+        "SQLResult": "",
+        "Answer": "",
     },
     {
-        'Question': "I need 5 devs who know mysql",
-        'SQLQuery': "SELECT employee_name FROM employee_profile WHERE employee_skill LIKE '%mysql%' LIMIT 5",
-        'SQLResult': "[('Rahul Gauswami',), ('Hitesh Darji',), ('Mohammadtufel Jerawala',), ('Kamalrajsinh Sodha',), ('Arati Bhadani',)]",
-        'Answer': "Rahul Gauswami, Hitesh Darji, Mohammadtufel Jerawala, Kamalrajsinh Sodha, Arati Bhadani"
+        "Question": "Who did not fill the logs yesterday?",
+        "SQLQuery": "SELECT ae.employee_id, COUNT(*) AS count, ae.event_date_time, e.* FROM attendance_event ae JOIN employee e ON ae.employee_id = e.id LEFT JOIN issue_work_log iwl ON ae.employee_id = iwl.employee_id AND DATE(iwl.spent_date) = DATE_SUB(CURDATE(), INTERVAL 1 DAY) WHERE DATE(ae.event_date_time) = DATE_SUB(CURDATE(), INTERVAL 1 DAY) AND ae.event_type = 0 AND iwl.employee_id IS NULL GROUP BY ae.employee_id;",
+        "SQLResult": "",
+        "Answer": "",
     },
     {
-        'Question': "Is Krishna Thakkar skilled in python?",
-        'SQLQuery': "SELECT employee_skill FROM employee_profile WHERE employee_name = 'Krishna Thakkar'",
-        'SQLResult': "[('MongoDB, Data Analysis, FastAPI - Python,)]",
-        'Answer': "Yes"
+        "Question": "Who have not filled logs for the last two days?",
+        "SQLQuery": "SELECT e.first_name, e.last_name, e.employee_code FROM employee e LEFT JOIN attendance_event ae ON e.id = ae.employee_id LEFT JOIN issue_work_log iwl ON e.id = iwl.employee_id AND DATE(iwl.spent_date) = DATE_SUB(CURDATE(), INTERVAL 2 DAY) WHERE DATE(ae.event_date_time) = DATE_SUB(CURDATE(), INTERVAL 2 DAY) AND ae.event_type = 0 AND iwl.employee_id IS null GROUP BY e.employee_code ORDER BY e.first_name;",
+        "SQLResult": "",
+        "Answer": "",
     },
     {
-        'Question': "Which department does Ujjawal Roy works in?",
-        'SQLQuery': "SELECT department_name FROM employee_profile WHERE employee_name = 'Ujjawal Roy'",
-        'SQLResult': "[('Data Science & AI/ML',)]",
-        'Answer': "Data Science & AI/ML"
+        "Question": "Which projects have less than 20hrs bucket hours today?",
+        "SQLQuery": "SELECT pb.id AS id, pb.name AS name, ( SELECT CAST( SUM(pcr.hours) AS UNSIGNED ) FROM project_change_request pcr WHERE pcr.project_id = pb.id ) AS total_hours, ( SELECT CAST( SUM(bb.billed_mins) AS UNSIGNED ) / 60 FROM bucket_billing bb WHERE bb.project_id = pb.id ) AS billed_hours, ( ( SELECT CAST( SUM(pcr.hours) AS UNSIGNED ) FROM project_change_request pcr WHERE pcr.project_id = pb.id ) - ( SELECT CAST( SUM(bb.billed_mins) AS UNSIGNED ) / 60 FROM bucket_billing bb WHERE bb.project_id = pb.id ) ) AS remain_hours FROM project_basic pb WHERE pb.type = 'Hourly bucket' AND (pb.status != 'Signed off' OR pb.status != 'Paused') AND ( ( SELECT CAST( SUM(pcr.hours) AS UNSIGNED ) FROM project_change_request pcr WHERE pcr.project_id = pb.id ) - ( SELECT CAST( SUM(bb.billed_mins) AS UNSIGNED ) / 60 FROM bucket_billing bb WHERE bb.project_id = pb.id ) ) < 20;",
+        "SQLResult": "",
+        "Answer": "",
     },
     {
-        'Question': "Brief me about MI-516",
-        'SQLQuery': "SELECT * FROM employee_profile WHERE employee_code = 'MI-516'",
-        'SQLResult': "[('MI-516', 'Ujjawal Roy', 'ujjawal.roy@mailinator.com', datetime.datetime(1997, 12, 12, 0, 0), 'B+', None, 'https://github.com/UjjawalKRoy', 'Mindinventory', 'on probation', 'Data Science & AI/ML', 'Data Scientist', 0.0, 'Samar Patel', 138, 'Artificial Intelligence, Computer Vision, Neural Network Architectures, Python for Data Science CNN, LLM, LLM, 'filled')]",
-        'Answer': "Data Science & AI/ML"
+        "Question": "Show projects having less than 20 hours remaining in hourly buckets today.",
+        "SQLQuery": "SELECT pb.id AS id, pb.name AS name, ( SELECT CAST( SUM(pcr.hours) AS UNSIGNED ) FROM project_change_request pcr WHERE pcr.project_id = pb.id ) AS total_hours, ( SELECT CAST( SUM(bb.billed_mins) AS UNSIGNED ) / 60 FROM bucket_billing bb WHERE bb.project_id = pb.id ) AS billed_hours, ( ( SELECT CAST( SUM(pcr.hours) AS UNSIGNED ) FROM project_change_request pcr WHERE pcr.project_id = pb.id ) - ( SELECT CAST( SUM(bb.billed_mins) AS UNSIGNED ) / 60 FROM bucket_billing bb WHERE bb.project_id = pb.id ) ) AS remain_hours FROM project_basic pb WHERE pb.type = 'Hourly bucket' AND (pb.status != 'Signed off' OR pb.status != 'Paused') AND ( ( SELECT CAST( SUM(pcr.hours) AS UNSIGNED ) FROM project_change_request pcr WHERE pcr.project_id = pb.id ) - ( SELECT CAST( SUM(bb.billed_mins) AS UNSIGNED ) / 60 FROM bucket_billing bb WHERE bb.project_id = pb.id ) ) < 20;",
+        "SQLResult": "",
+        "Answer": "",
     },
     {
-        'Question': "How many Python devs do we have?",
-        'SQLQuery': "SELECT COUNT(*) FROM employee_profile WHERE employee_skill LIKE '%Python%'",
-        'SQLResult': "[(9,)]",
-        'Answer': "9"
+        "Question": "Which projects do we need to send invoice to in hire today?",
+        "SQLQuery": "SELECT pb.id AS id, pb.name AS name, pr.est_release_date, e.first_name AS first_name, e.last_name AS last_name, DATEDIFF(pr.est_release_date, CURDATE()) AS remain_days FROM project_basic pb LEFT JOIN project_resource pr ON pr.project_id = pb.id LEFT JOIN employee e ON pr.employee_id = e.id WHERE pb.type = 'Dedicated' AND pr.billable = 1 AND (pb.status != 'Signed off' AND pb.status != 'Paused') AND DATEDIFF(pr.est_release_date, CURDATE()) <= 7 GROUP BY pr.project_id, pr.employee_id ORDER BY pb.name ASC;",
+        "SQLResult": "",
+        "Answer": "",
     },
     {
-        'Question': "Has Nency Patel filled her logs?",
-        'SQLQuery': "SELECT timesheet_filling_status FROM employee_profile WHERE employee_name = 'Nency Patel'",
-        'SQLResult': "[('filled',)]",
-        'Answer': "filled"
+        "Question": "Which projects require invoices for employees under hire within the next week?",
+        "SQLQuery": "SELECT pb.id AS project_id, pb.name AS project_name, pr.est_release_date, e.first_name, e.last_name, DATEDIFF(pr.est_release_date, CURDATE()) AS remain_days FROM project_basic pb LEFT JOIN project_resource pr ON pr.project_id = pb.id LEFT JOIN employee e ON pr.employee_id = e.id WHERE pb.type = 'Dedicated' AND pr.billable = 1 AND (pb.status != 'Signed off' AND pb.status != 'Paused') AND DATEDIFF(pr.est_release_date, CURDATE()) <= 7 GROUP BY pr.project_id, pr.employee_id ORDER BY pb.name ASC;",
+        "SQLResult": "",
+        "Answer": "",
     },
     {
-        'Question': "Who is the CEO of MindInventory?",
-        'SQLQuery': "SELECT employee_name FROM employee_profile WHERE job_title = 'CEO' AND business_unit_name = 'MindInventory'",
-        'SQLResult': "[('Mehul Rajput',),]",
-        'Answer': "Mehul Rajput"
+        "Question": "Give me a list of upcoming milestones for Fixed cost projects",
+        "SQLQuery": "SELECT pb.name AS name, pb.status AS status, pm.name AS milestone_name, pm.status AS milestone_status, pm.est_date_completion AS est_date_completion FROM project_basic pb LEFT JOIN project_milestone pm ON pm.project_id = pb.id WHERE pb.type = 'Fixed cost' AND ( pb.status != 'Signed off' AND pb.status != 'Paused' ) AND pm.est_date_completion >= CURDATE();",
+        "SQLResult": "",
+        "Answer": "",
     },
     {
-        'Question': "I need 3 devs who are proficient in python and sql",
-        'SQLQuery': "SELECT employee_name FROM employee_profile WHERE employee_skill LIKE '%python%' AND employee_skill LIKE '%sql%' LIMIT 3",
-        'SQLResult': "[('Hasmukh Suthar',)]",
-        'Answer': "Hasmukh Suthar"
+        "Question": "Did we send invoice for Project1?",
+        "SQLQuery": "SELECT i.title AS invoice_title, i.invoice_no AS invoice_number, i.createdAt AS invoice_created, pb.name AS project_name, pb.id AS project_id FROM invoice i LEFT JOIN project_basic pb ON i.project_id = pb.id WHERE pb.name LIKE '%Project1%' AND DATE(i.createdAt) >= DATE_SUB( CURDATE(), INTERVAL 15 DAY ) AND email_sent = 1;",
+        "SQLResult": "",
+        "Answer": "",
     },
     {
-        'Question': "Who all are in probation?",
-        'SQLQuery': "SELECT employee_name FROM employee_profile WHERE employment_status = 'on probation'",
-        'SQLResult': "",
-        'Answer': "None"
+        "Question": "How many interviews do i have to take today and at what time? My employeee_code is MI-264",
+        "SQLQuery": "SELECT c.first_name, c.last_name, ji.start_date_time, ji.interview_mode, ji.result FROM job_interview ji LEFT JOIN candidates c ON ji.candidate = c.id WHERE FIND_IN_SET((SELECT id from employee WHERE employee_code='MI-264') , ji.interviewers) > 0 AND DATE(ji.start_date_time) = CURDATE();",
+        "SQLResult": "",
+        "Answer": "",
     },
     {
-        'Question': "Who is on leave today?",
-        'SQLQuery': "SELECT e.first_name, e.last_name FROM employee e JOIN leave_application l ON e.id = l.employee_id WHERE l.from_date <= CURDATE() AND l.to_date >= CURDATE() AND l.leave_status = 2;",
-        'SQLResult': "[(Ujjawal, Roy,), (Siddhant, Pandey, )]",
-        'Answer': "Ujjawal Roy and Siddhant Pandey are on leave today."
-    }
+        "Question": "Whats for lunch today?",
+        "SQLQuery": "SELECT menu FROM lunch_menu LIMIT 1;",
+        "SQLResult": "",
+        "Answer": "",
+    },
+    {
+        "Question": "Who has the Realme-C3?",
+        "SQLQuery": "SELECT a.name AS name, a.description AS description, a.assetId as assetId, di.status AS status, CONCAT(e.first_name, ' ', e.last_name) AS device_with FROM device_information di LEFT JOIN asset a ON a.id = di.device_id LEFT JOIN employee e ON di.employee_id = e.id WHERE a.name LIKE '%Realme-C3%';",
+        "SQLResult": "",
+        "Answer": "",
+    },
+    {
+        "Question": "Whats for lunch tomorrow?",
+        "SQLQuery": "SELECT menu FROM lunch_menu LIMIT 1;",
+        "SQLResult": "",
+        "Answer": "",
+    },
+    {
+        "Question": "Did I check for lunch today? My employee_code is MI-516",
+        "SQLQuery": "SELECT COUNT(*) > 0 AS did_check_for_lunch FROM lunch_report lr JOIN employee e ON lr.employee_id = e.id WHERE e.employee_code = 'MI-516' AND DATE(lr.date) = CURDATE();",
+        "SQLResult": "",
+        "Answer": "",
+    },
+    {
+        "Question": "How many offline and online interviews are there today?",
+        "SQLQuery": "SELECT COUNT(*) AS total_interviews, SUM(CASE WHEN interview_mode LIKE '%online%' THEN 1 ELSE 0 END) AS online_interviews, SUM(CASE WHEN interview_mode NOT LIKE '%online%' THEN 1 ELSE 0 END) AS offline_interviews FROM job_interview WHERE start_date_time >= NOW() AND start_date_time < NOW() + INTERVAL 1 DAY;",
+        "SQLResult": "",
+        "Answer": "",
+    },
+    {
+        "Question": "Whose birthday is it today?",
+        "SQLQuery": "SELECT employee_code, first_name, last_name FROM employee WHERE Day(dob) = Day(Curdate()) AND Month(dob) = Month(Curdate());",
+        "SQLResult": "",
+        "Answer": "",
+    },
+    {
+        "Question": "Whose birthday was yesterday?",
+        "SQLQuery": "SELECT employee_code, first_name, last_name FROM   employee WHERE  Date_add(dob, INTERVAL Year(CURRENT_DATE()) - Year(dob) YEAR) = DATE_SUB(CURRENT_DATE(), INTERVAL 1 DAY);",
+        "SQLResult": "",
+        "Answer": "",
+    },
+    {
+        "Question": "Whose birthday was last week?",
+        "SQLQuery": "SELECT employee_code, first_name, last_name FROM employee WHERE  Date_add(dob, INTERVAL Year(CURRENT_DATE()) - Year(dob)YEAR) BETWEEN Date_sub(CURRENT_DATE(), INTERVAL 7 DAY) AND CURRENT_DATE();",
+        "SQLResult": "",
+        "Answer": "",
+    },
+    {
+        "Question": "Whose birthday is next week?",
+        "SQLQuery": "SELECT employee_code, first_name, last_name FROM employee WHERE Date_add(dob, INTERVAL Year(CURRENT_DATE()) - Year(dob) year) between CURRENT_DATE() AND Date_add(CURRENT_DATE(), INTERVAL 7 day);",
+        "SQLResult": "",
+        "Answer": "",
+    },
+    {
+        "Question": "Whose birthday is tomorrow?",
+        "SQLQuery": "SELECT employee_code, first_name, last_name FROM employee WHERE Date_add(dob, INTERVAL Year(CURRENT_DATE()) - Year(dob) YEAR) = DATE_ADD(CURRENT_DATE(), INTERVAL 1 DAY);",
+        "SQLResult": "",
+        "Answer": "",
+    },
+    {
+        "Question": "Whose Anniversary is today?",
+        "SQLQuery": "SELECT employee_code, first_name,last_name from employee WHERE Day(join_date) = Day(Curdate()) AND Month(join_date) = Month(Curdate());",
+        "SQLResult": "",
+        "Answer": "",
+    },
+    {
+        "Question": "Whose Anniversary was last week?",
+        "SQLQuery": "SELECT employee_code, first_name, last_name, join_date from employee where Date_add(join_date, INTERVAL Year(CURRENT_DATE()) - Year(join_date) YEAR) between Date_sub(CURRENT_DATE(), INTERVAL 7 DAY) AND CURRENT_DATE();",
+        "SQLResult": "",
+        "Answer": "",
+    },
+    {
+        "Question": "How many leaves do I have? employee_code of user querying=MI-488",
+        "SQLQuery": "SELECT sum(balance) FROM leave_balance WHERE employee_id IN (SELECT id FROM employee WHERE employee_code = 'MI-488');",
+        "SQLResult": "",
+        "Answer": "",
+    },
+    {
+        "Question": "Whose Anniversary is in the next week?",
+        "SQLQuery": "SELECT employee_code, first_name, last_name, join_date FROM   employee WHERE  Date_add(join_date, INTERVAL Year(CURRENT_DATE()) - Year(join_date) year) BETWEEN CURRENT_DATE() AND Date_add(CURRENT_DATE(), INTERVAL 7 day);",
+        "SQLResult": "",
+        "Answer": "",
+    },
+    {
+        "Question": "Whose Anniversary is tomorrow?",
+        "SQLQuery": "SELECT employee_code, first_name, last_name, join_date FROM   employee WHERE  Date_add(join_date, INTERVAL Year(CURRENT_DATE()) - Year(join_date) YEAR) = DATE_ADD(CURRENT_DATE(), INTERVAL 1 DAY);",
+        "SQLResult": "",
+        "Answer": "",
+    },
+    {
+        "Question": "Need b positive blood group",
+        "SQLQuery": "SELECT e.employee_code, e.first_name, e.last_name FROM employee e WHERE e.blood_group = 'B+';",
+        "SQLResult": "",
+        "Answer": "",
+    },
+    {
+        "Question": "Who is reporting manager of Ujjawal Roy?",
+        "SQLQuery": "SELECT m.first_name AS manager_first_name, m.last_name AS manager_last_name FROM employee e JOIN employee m ON e.reporting_to = m.id WHERE e.first_name = 'Ujjawal' AND e.last_name = 'Roy';",
+        "SQLResult": "",
+        "Answer": "",
+    },
+    {
+        "Question": "Who all work under Samar Patel?",
+        "SQLQuery": "SELECT e.first_name, e.last_name FROM employee e WHERE e.reporting_to = (SELECT id FROM employee WHERE first_name = 'Samar' AND last_name = 'Patel');",
+        "SQLResult": "",
+        "Answer": "",
+    },
+    {
+        "Question": "Which job openings we have right now?",
+        "SQLQuery": "SELECT * FROM jobs WHERE status LIKE '%open%';",
+        "SQLResult": "",
+        "Answer": "",
+    },
+    {
+        "Question": "Show me the emergency number of MI-488",
+        "SQLQuery": "SELECT eec.mobile_no, e.employee_code FROM employee e JOIN employee_emergency_contact eec ON e.id = eec.employee_id WHERE e.employee_code = 'MI-488';",
+        "SQLResult": "",
+        "Answer": "",
+    },
 ]
+
 print(len(emp_profile_few_shots))

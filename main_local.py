@@ -1,16 +1,19 @@
+import datetime
+
 import langchain
-from loguru import logger
-from langchain.chains import LLMChain
 from langchain.callbacks import FileCallbackHandler
+from langchain.chains import LLMChain
+from loguru import logger
 from langchain.chains.sql_database.prompt import PROMPT_SUFFIX
 from langchain.prompts import FewShotPromptTemplate
 from langchain.prompts import SemanticSimilarityExampleSelector
 from langchain.prompts.prompt import PromptTemplate
 from langchain.utilities.sql_database import SQLDatabase
 from langchain_community.embeddings import HuggingFaceEmbeddings
+from langchain_community.llms import LlamaCpp
 from langchain_community.vectorstores import Chroma
+from langchain_core.callbacks import CallbackManager, StreamingStdOutCallbackHandler
 from langchain_experimental.sql import SQLDatabaseChain
-from langchain_google_genai import GoogleGenerativeAI
 
 import system_prompt
 from examples import emp_profile_few_shots
@@ -19,14 +22,12 @@ logfile = "output.log"
 
 logger.add(logfile, colorize=True, enqueue=True)
 handler = FileCallbackHandler(logfile)
+
 langchain.verbose = True
 
-api_key = "AIzaSyA5npGkRSAWoCt4P93ztBzl0o2lIk8GOnI"
-llm = GoogleGenerativeAI(
-    model="models/text-bison-001", google_api_key=api_key, temperature=0.1
-)
-# datetime = datetime.ti
-responder_prompt = """Your job is to rephrase the answer of User Question in tone of a helpful assistant without skipping any information.  If the answer contains just numbers/dates then format it in a human like tone.
+
+responder_prompt = """Your job is to rephrase the answer of User Question in tone of a helpful assistant without 
+skipping any information.  If the answer contains just numbers/dates then format it in a human like tone.
 
 USER QUESTION:
 {query}
@@ -34,12 +35,27 @@ ANSWER: {context}
 FINAL RESPONSE:
 """
 
+callback_manager = CallbackManager([StreamingStdOutCallbackHandler()])
+llm = LlamaCpp(
+    model_path="D:/models/NeuralBeagle14-7B.Q8_0.gguf",
+    n_ctx=8000,
+    n_gpu_layers=40,
+    n_threads=8,
+    n_batch=512,
+    max_tokens=200,
+    temperature=0.1,
+    top_p=0.1,
+    callback_manager=callback_manager,
+)
+
 # print(db.table_info)
 embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
 to_vectorize = [" ".join(example.values()) for example in emp_profile_few_shots]
 vectorstore = Chroma.from_texts(
     to_vectorize, embeddings, metadatas=emp_profile_few_shots
 )
+# vectorstore = vectorstore.as_retriever(search_type="mmr", search_kwargs={'k': 1, 'fetch_k': 5, 'lambda_mult': 0.5})
+# docs = vectorstore.get_relevant_documents(query)
 example_selector = SemanticSimilarityExampleSelector(
     vectorstore=vectorstore,
     k=2,
