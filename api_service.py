@@ -31,7 +31,8 @@ async def ask(user_query: UserQuery):
     role = user_query.role
     intent = user_query.intent
     is_generic = user_query.is_generic
-    is_generic = False
+    if is_generic is None:
+        is_generic = False
     print(f"Query: {query} | Intent: {intent}")
     logger.info(f"Query: {query} | Intent: {intent}")
     if is_generic:
