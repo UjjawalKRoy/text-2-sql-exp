@@ -23,15 +23,23 @@ langchain.verbose = True
 
 api_key = "AIzaSyA5npGkRSAWoCt4P93ztBzl0o2lIk8GOnI"
 llm = GoogleGenerativeAI(
-    model="models/text-bison-001", google_api_key=api_key, temperature=0.1
+    model="models/text-bison-001", google_api_key=api_key, temperature=0.3
 )
 # datetime = datetime.ti
-responder_prompt = """Your job is to rephrase the answer of User Question in tone of a helpful assistant without skipping any information.  If the answer contains just numbers/dates then format it in a human like tone.
+responder_prompt = """Your task is to meticulously review, rephrase, and respond eloquently to the User Question 
+along with its corresponding output. Maintain a tone reminiscent of a helpful human assistant, ensuring no 
+information is omitted. If the answer comprises solely lists of values, numbers, or dates, present them in a more 
+human-like manner. Additionally, ensure any sensitive and confidential information is appropriately blocked off in 
+the final response.
 
 USER QUESTION:
 {query}
-ANSWER: {context}
+
+OUTPUT:
+{context}
+
 FINAL RESPONSE:
+
 """
 
 # print(db.table_info)
@@ -94,6 +102,7 @@ def create_db_chain(tables: list[str], query: str):
         prompt=few_shot_prompt,
         return_direct=True,
         callbacks=[handler],
+        top_k=8
     )
     # for q in ques:
     #     db_chain.invoke({"query": q})

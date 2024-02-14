@@ -15,7 +15,7 @@ class UserQuery(BaseModel):
     role: str
     tables: Optional[list[str]]
     entities: Optional[list]
-    is_generic: bool
+    is_generic: Optional[bool]
 
 
 @app.get("/")
@@ -31,6 +31,7 @@ async def ask(user_query: UserQuery):
     role = user_query.role
     intent = user_query.intent
     is_generic = user_query.is_generic
+    is_generic = False
     print(f"Query: {query} | Intent: {intent}")
     logger.info(f"Query: {query} | Intent: {intent}")
     if is_generic:
