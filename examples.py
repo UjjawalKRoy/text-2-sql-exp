@@ -6,6 +6,12 @@ emp_profile_few_shots = [
         "Answer": "",
     },
     {
+        "Question": "Who is absent today?",
+        "SQLQuery": "SELECT e.first_name, e.last_name FROM employee e JOIN leave_application l ON e.id = l.employee_id WHERE l.from_date <= CURDATE() AND l.to_date >= CURDATE() AND l.leave_status = 2;",
+        "SQLResult": "",
+        "Answer": "",
+    },
+    {
         "Question": "Who all are on leave today?",
         "SQLQuery": "SELECT e.first_name, e.last_name FROM employee e JOIN leave_application l ON e.id = l.employee_id WHERE l.from_date <= CURDATE() AND l.to_date >= CURDATE() AND l.leave_status = 2;",
         "SQLResult": "",
@@ -247,7 +253,7 @@ emp_profile_few_shots = [
     },
     {
         "Question": "Need b positive blood group",
-        "SQLQuery": "SELECT e.employee_code, e.first_name, e.last_name FROM employee e WHERE e.blood_group = 'B+';",
+        "SQLQuery": "SELECT e.employee_code, e.first_name, e.last_name FROM employee e WHERE e.blood_group = 'B+' LIMIT 8;",
         "SQLResult": "",
         "Answer": "",
     },
