@@ -100,7 +100,7 @@ emp_profile_few_shots = [
     },
     {
         "Question": "List all employees who are free in the Mobile team?",
-        "SQLQuery": "SELECT COUNT(*) FROM employee e JOIN employee_occupancy o ON e.id = o.employee_id AND "
+        "SQLQuery": "SELECT employee_code, first_name, last_name FROM employee e JOIN employee_occupancy o ON e.id = o.employee_id AND "
                     "o.occupancy_status IN (0, 1) JOIN department_type d ON e.department_id = d.id WHERE d.name LIKE "
                     "'%Mobile%' LIMIT 8;",
         "SQLResult": "",

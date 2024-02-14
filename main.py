@@ -98,7 +98,7 @@ def respond(query: str, context: list):
 
 def create_db_chain(tables: list[str], query: str):
     db = SQLDatabase.from_uri(
-        "mysql://root:password@localhost/mrms", include_tables=tables
+        "mysql://langchain:password@localhost/mrms", include_tables=tables
     )
     db_chain = SQLDatabaseChain.from_llm(
         sqllm,
