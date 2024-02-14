@@ -12,6 +12,7 @@ from langchain_community.vectorstores import Chroma
 from langchain_experimental.sql import SQLDatabaseChain
 from langchain_google_genai import GoogleGenerativeAI
 from dotenv import load_dotenv
+from chart_service import list_of_charts, get_chart
 import system_prompt
 from examples import emp_profile_few_shots
 import os
@@ -121,6 +122,7 @@ def create_db_chain(tables: list[str], query: str):
     logger.info(res)
     if not res:
         return None
+    get_chart(list_of_charts, query, res, llm)
     result = respond(query=query, context=res)
     print(result)
     return {"result": result}
