@@ -530,18 +530,16 @@ emp_profile_few_shots = [
         "Answer": "",
     },
     {
-        "Question": "Who is John Roy?",
-        "SQLQuery": "SELECT e.first_name, e.last_name, dt.name AS department, d.name AS designation, TIMESTAMPDIFF("
-                    "YEAR, e.join_date, NOW()) AS years_in_company, e.google_profile, e.email_id, e.mobile_no FROM "
+        "Question": "Who is Hasmukh Suthar?",
+        "SQLQuery": "SELECT JSON_OBJECT( 'first_name', e.first_name, 'last_name', e.last_name, 'department', dt.name, 'designation', d.name, 'years_in_company', TIMESTAMPDIFF(YEAR, e.join_date, NOW()), 'social_links', e.google_profile, 'email', e.email_id, 'mobile', e.mobile_no ) AS employee_info FROM "
                     "employee e JOIN designation_type d ON e.designation_id = d.id JOIN department_type dt ON "
-                    "e.department_id = dt.id WHERE e.first_name = 'John' AND e.last_name = 'Roy';",
+                    "e.department_id = dt.id WHERE e.first_name = 'Hasmukh' AND e.last_name = 'Suthar';",
         "SQLResult": "",
         "Answer": "",
     },
     {
         "Question": "Tell me about Tirth Shah",
-        "SQLQuery": "SELECT e.first_name, e.last_name, dt.name AS department, d.name AS designation, TIMESTAMPDIFF("
-                    "YEAR, e.join_date, NOW()) AS years_in_company, e.google_profile, e.email_id, e.mobile_no FROM "
+        "SQLQuery": "SELECT JSON_OBJECT( 'first_name', e.first_name, 'last_name', e.last_name, 'department', dt.name, 'designation', d.name, 'years_in_company', TIMESTAMPDIFF(YEAR, e.join_date, NOW()), 'social_links', e.google_profile, 'email', e.email_id, 'mobile', e.mobile_no ) AS employee_info FROM "
                     "employee e JOIN designation_type d ON e.designation_id = d.id JOIN department_type dt ON "
                     "e.department_id = dt.id WHERE e.first_name = 'Tirth' AND e.last_name = 'Shah';",
         "SQLResult": "",

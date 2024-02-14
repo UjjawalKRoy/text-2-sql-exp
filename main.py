@@ -22,8 +22,13 @@ handler = FileCallbackHandler(logfile)
 langchain.verbose = True
 
 api_key = "AIzaSyA5npGkRSAWoCt4P93ztBzl0o2lIk8GOnI"
+
+sqllm = GoogleGenerativeAI(
+    model="models/text-bison-001", google_api_key=api_key, temperature=0.1
+)
+
 llm = GoogleGenerativeAI(
-    model="models/text-bison-001", google_api_key=api_key, temperature=0.3
+    model="models/text-bison-001", google_api_key=api_key, temperature=0.8
 )
 # datetime = datetime.ti
 responder_prompt = """Your task is to meticulously review, rephrase, and respond eloquently to the User Question 
@@ -96,7 +101,7 @@ def create_db_chain(tables: list[str], query: str):
         "mysql://root:password@localhost/mrms", include_tables=tables
     )
     db_chain = SQLDatabaseChain.from_llm(
-        llm,
+        sqllm,
         db,
         verbose=True,
         prompt=few_shot_prompt,
