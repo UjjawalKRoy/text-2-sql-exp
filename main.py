@@ -11,17 +11,18 @@ from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain_community.vectorstores import Chroma
 from langchain_experimental.sql import SQLDatabaseChain
 from langchain_google_genai import GoogleGenerativeAI
-
+from dotenv import load_dotenv
 import system_prompt
 from examples import emp_profile_few_shots
+import os
 
 logfile = "output.log"
-
+load_dotenv(dotenv_path=".env")
 logger.add(logfile, colorize=True, enqueue=True)
 handler = FileCallbackHandler(logfile)
 langchain.verbose = True
 
-api_key = "AIzaSyA5npGkRSAWoCt4P93ztBzl0o2lIk8GOnI"
+api_key = os.getenv("API_KEY")
 
 sqllm = GoogleGenerativeAI(
     model="models/text-bison-001", google_api_key=api_key, temperature=0.1
