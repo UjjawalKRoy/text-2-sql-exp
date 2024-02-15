@@ -37,7 +37,7 @@ async def ask(user_query: UserQuery):
     logger.info(f"Query: {query} | Intent: {intent}")
     if is_generic:
         res = get_generic_response(query=query)
-        return res
+        return {"result": res}
     else:
         if role.lower() == "own":
             return create_db_chain(
