@@ -14,7 +14,7 @@ from langchain_google_genai import GoogleGenerativeAI
 from dotenv import load_dotenv
 import sql_system_prompt
 from examples import emp_profile_few_shots
-from prompts import responder_prompt
+from prompts import RESPONDER_PROMPT
 import os
 
 logfile = "output.log"
@@ -65,7 +65,7 @@ few_shot_prompt = FewShotPromptTemplate(
     ],  # These variables are used in the prefix and suffix
 )
 final_prompt = PromptTemplate(
-    input_variables=["context", "query"], template=responder_prompt
+    input_variables=["context", "query"], template=RESPONDER_PROMPT
 )
 final_chain = LLMChain(llm=llm, prompt=final_prompt, callbacks=[handler])
 
@@ -100,11 +100,11 @@ def create_db_chain(tables: list[str], query: str):
         qns1 = db_chain.invoke({"query": query})
     except Exception as e:
         logger.info(e)
-        qns1 = {"result": [sql_system_prompt.sql_exception_response]}
+        qns1 = {"result": [sql_system_prompt.SQL_EXCEPTION_RESPONSE]}
     res = qns1["result"]
     logger.info(res)
     if not res:
-        res = sql_system_prompt.null_output_response
+        res = sql_system_prompt.NULL_OUTPUT_RESPONSE
     result = respond(query=query, context=res)
     print(result)
     return {"result": result}

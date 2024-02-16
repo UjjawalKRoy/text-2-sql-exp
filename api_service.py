@@ -14,7 +14,7 @@ class UserQuery(BaseModel):
     intent: str
     role: str
     tables: Optional[list[str]]
-    entities: Optional[list]
+    entities: Optional[list[dict]]
     is_generic: Optional[bool]
 
 
@@ -30,7 +30,9 @@ async def ask(user_query: UserQuery):
     table_names = user_query.tables
     role = user_query.role
     intent = user_query.intent
+    entities = user_query.entities
     is_generic = user_query.is_generic
+    print("entities==============================>", entities)
     if is_generic is None:
         is_generic = False
     print(f"Query: {query} | Intent: {intent}")
@@ -39,6 +41,10 @@ async def ask(user_query: UserQuery):
         res = get_generic_response(query=query)
         return {"result": res}
     else:
+        if entities:
+            for doc in entities:
+                if doc['entity'].lower() == 'person' and (doc['value'].lower() in ['my', 'i', 'myself', 'me', 'mine']):
+                    query = query + f" Remember, my employee_code='{user}'"
         if role.lower() == "own":
             return create_db_chain(
                 tables=table_names, query=f"{query} employee_code of user querying={user}"
