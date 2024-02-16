@@ -95,20 +95,16 @@ def create_db_chain(tables: list[str], query: str):
         callbacks=[handler],
         top_k=8
     )
-    # for q in ques:
-    #     db_chain.invoke({"query": q})
+
     try:
         qns1 = db_chain.invoke({"query": query})
     except Exception as e:
         logger.info(e)
-        qns1 = {"result": ["Apologies for the inconvenience! 🙏 It seems the database is currently experiencing a bit "
-                           "of a hiccup and isn't cooperating as we'd like. 🤖"]}
+        qns1 = {"result": [sql_system_prompt.sql_exception_response]}
     res = qns1["result"]
     logger.info(res)
     if not res:
-        res = ("It seems that there are no instances matching your query at the moment. However, rest assured that I'm "
-               "continuously monitoring the database for updates. If you have any other inquiries or if there's "
-               "anything else I can assist you with, please feel free to let me know!")
+        res = sql_system_prompt.null_output_response
     result = respond(query=query, context=res)
     print(result)
     return {"result": result}

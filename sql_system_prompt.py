@@ -35,3 +35,9 @@ make use of the following Example 'SQLQuery' for generating SQL query:
 #     input_variables=["top_k", "table_info", "input"],
 #     template=_DEFAULT_PROMPT+PROMPT_SUFFIX
 # )
+
+null_output_response = """It seems that there are no occurrences matching your query at the moment. If you have any 
+other inquiries or if there's anything else I can assist you with, please feel free to let me know!"""
+
+sql_exception_response = """Apologies for the inconvenience! 🙏 It seems the database is currently experiencing a bit 
+of a hiccup and isn't cooperating as we'd like. 🤖"""
