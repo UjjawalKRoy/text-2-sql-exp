@@ -34,7 +34,7 @@ async def ask(user_query: UserQuery):
     if is_generic is None:
         is_generic = False
     print(f"Query: {query} | Intent: {intent}")
-    logger.info(f"Query: {query} | Intent: {intent}")
+    logger.info(f"Query: {query} | Intent: {intent} | is_generic: {is_generic}")
     if is_generic:
         res = get_generic_response(query=query)
         return {"result": res}

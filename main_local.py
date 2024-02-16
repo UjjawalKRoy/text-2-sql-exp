@@ -15,7 +15,7 @@ from langchain_community.vectorstores import Chroma
 from langchain_core.callbacks import CallbackManager, StreamingStdOutCallbackHandler
 from langchain_experimental.sql import SQLDatabaseChain
 
-import system_prompt
+import sql_system_prompt
 from examples import emp_profile_few_shots
 
 logfile = "output.log"
