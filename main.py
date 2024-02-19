@@ -1,4 +1,7 @@
+import ast
+
 import langchain
+import pandas as pd
 from loguru import logger
 from langchain.chains import LLMChain
 from langchain.callbacks import FileCallbackHandler
@@ -12,6 +15,8 @@ from langchain_community.vectorstores import Chroma
 from langchain_experimental.sql import SQLDatabaseChain
 from langchain_google_genai import GoogleGenerativeAI
 from dotenv import load_dotenv
+from pandas import DataFrame
+
 import sql_system_prompt
 from examples import emp_profile_few_shots
 from prompts import RESPONDER_PROMPT
@@ -26,11 +31,11 @@ langchain.verbose = True
 api_key = os.getenv("API_KEY")
 
 sqllm = GoogleGenerativeAI(
-    model="models/text-bison-001", google_api_key=api_key, temperature=0.1
+    model="models/text-bison-001", google_api_key=api_key, temperature=0.1, max_output_tokens=2000
 )
 
 llm = GoogleGenerativeAI(
-    model="models/text-bison-001", google_api_key=api_key, temperature=0.8
+    model="models/text-bison-001", google_api_key=api_key, temperature=0.8, max_output_tokens=5000
 )
 
 embeddings = HuggingFaceEmbeddings(model_name="WhereIsAI/UAE-Large-V1")
@@ -72,14 +77,17 @@ final_chain = LLMChain(llm=llm, prompt=final_prompt, callbacks=[handler])
 
 def respond(query: str, context: list):
     p = final_prompt.format(query=query, context=context)
-    print(p)
+    logger.info(p)
     try:
         ans = final_chain.predict(query=query, context=context)
         logger.info(ans)
         return ans
     except Exception as e:
         logger.info(f'Exception raised in respond() function: {e}')
-        return context
+        data = ast.literal_eval(str(context))
+        columns = [f'column{i}' for i in range(len(data[0]))]
+        context_df: DataFrame = pd.DataFrame(data=data, columns=columns, index=None)
+        return str(context_df.to_dict())
 
 
 def create_db_chain(tables: list[str], query: str):
