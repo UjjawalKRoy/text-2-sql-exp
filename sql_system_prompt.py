@@ -14,7 +14,8 @@ for all columns from a table. You must query only the columns that are needed to
 column name in backticks (`) to denote them as delimited identifiers. Pay attention to use only the column names you 
 can see in the tables below. Be careful to not query for columns that do not exist. Also, pay attention to which 
 column is in which table. Pay attention to use CURDATE() function to get the current date, if the question involves 
-"today". Instead of WHERE try to use LIKE clause. Stop after giving the first answer, do not ask any followup questions.
+"today". In case of names, designations, departments, etc. always use LIKE clause in WHERE statement. Stop after 
+giving the first answer, do not ask any followup questions.
 
 Use the following format:
 
