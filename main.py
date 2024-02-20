@@ -1,10 +1,11 @@
 import ast
+import os
 
 import langchain
 import pandas as pd
-from loguru import logger
-from langchain.chains import LLMChain
+from dotenv import load_dotenv
 from langchain.callbacks import FileCallbackHandler
+from langchain.chains import LLMChain
 from langchain.chains.sql_database.prompt import PROMPT_SUFFIX
 from langchain.prompts import FewShotPromptTemplate
 from langchain.prompts import SemanticSimilarityExampleSelector
@@ -14,13 +15,12 @@ from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain_community.vectorstores import Chroma
 from langchain_experimental.sql import SQLDatabaseChain
 from langchain_google_genai import GoogleGenerativeAI
-from dotenv import load_dotenv
+from loguru import logger
 from pandas import DataFrame
 
 import sql_system_prompt
 from examples import emp_profile_few_shots
 from prompts import RESPONDER_PROMPT
-import os
 
 logfile = "output.log"
 load_dotenv(dotenv_path=".env")
@@ -75,13 +75,20 @@ final_prompt = PromptTemplate(
 final_chain = LLMChain(llm=llm, prompt=final_prompt, callbacks=[handler])
 
 
-def respond(query: str, context: list):
+def respond(query: str, context: list) -> object:
+    """
+
+    :param query:
+    :param context:
+    :return:
+    :rtype: object
+    """
     p = final_prompt.format(query=query, context=context)
     logger.info(p)
     try:
         ans = final_chain.predict(query=query, context=context)
         logger.info(ans)
-        return ans
+        return repr(ans)
     except Exception as e:
         logger.info(f'Exception raised in respond() function: {e}')
         data = ast.literal_eval(str(context))
@@ -90,7 +97,14 @@ def respond(query: str, context: list):
         return str(context_df.to_dict())
 
 
-def create_db_chain(tables: list[str], query: str):
+def create_db_chain(tables: list[str], query: str) -> object:
+    """
+
+    :param tables:
+    :param query:
+    :return:
+    :rtype: object
+    """
     db = SQLDatabase.from_uri(
         "mysql://langchain:password@localhost/mrms", include_tables=tables
     )

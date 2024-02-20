@@ -12,11 +12,16 @@ logger.add(logfile, colorize=True, enqueue=True)
 handler = FileCallbackHandler(logfile)
 
 
-def get_generic_response(query: str):
+def get_generic_response(query: str) -> object:
+    """
+
+    :rtype: object
+    """
     try:
         prompt = PromptTemplate(input_variables=["query"], template=GENERIC_SYSTEM_PROMPT)
         final_chain = LLMChain(llm=llm, prompt=prompt, callbacks=[handler], verbose=True)
         res = final_chain.invoke({"query": query})
         return res["text"]
-    except:
+    except Exception as e:
+        logger.info(e)
         return "Can you please rephrase the question?"

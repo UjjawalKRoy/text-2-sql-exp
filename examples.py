@@ -247,7 +247,14 @@ emp_profile_few_shots = [
     {
         "Question": "Did I check for lunch today? My employee_code is MI-516",
         "SQLQuery": "SELECT COUNT(*) > 0 AS did_check_for_lunch FROM lunch_report lr JOIN employee e ON "
-                    "lr.employee_id = e.id WHERE e.employee_code = 'MI-516' AND DATE(lr.date) = CURDATE() LIMIT 8;",
+                    "lr.employee_id = e.id WHERE e.employee_code = 'MI-516' AND DATE(lr.date) = CURDATE();",
+        "SQLResult": "",
+        "Answer": "",
+    },
+    {
+        "Question": "Did I opt in for lunch today? My employee_code is MI-488",
+        "SQLQuery": "SELECT COUNT(*) > 0 AS did_check_for_lunch FROM lunch_report lr JOIN employee e ON "
+                    "lr.employee_id = e.id WHERE e.employee_code = 'MI-488' AND DATE(lr.date) = CURDATE();",
         "SQLResult": "",
         "Answer": "",
     },
@@ -339,6 +346,13 @@ emp_profile_few_shots = [
         "Question": "Need b positive blood group",
         "SQLQuery": "SELECT e.employee_code, e.first_name, e.last_name FROM employee e WHERE e.blood_group = 'B+' "
                     "LIMIT 8 LIMIT 8;",
+        "SQLResult": "",
+        "Answer": "",
+    },
+    {
+        "Question": "give me a list of ab minus blood group.",
+        "SQLQuery": "SELECT e.employee_code, e.first_name, e.last_name FROM employee e WHERE e.blood_group = 'AB-' "
+                    "LIMIT 8;",
         "SQLResult": "",
         "Answer": "",
     },
