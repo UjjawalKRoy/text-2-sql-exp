@@ -1,0 +1,12 @@
+SELECT 
+    DATE_FORMAT(date, '%Y-%m') AS month,
+    SUM(amount) AS cumulative_sales
+FROM 
+    invoice_payment
+WHERE 
+    YEAR(date) = YEAR(CURRENT_DATE()) - IF(MONTH(CURRENT_DATE()) BETWEEN 4 AND 12, 0, 1)
+    AND QUARTER(date) = QUARTER(DATE_SUB(CURRENT_DATE(), INTERVAL 1 QUARTER))
+GROUP BY 
+    DATE_FORMAT(date, '%Y-%m')
+ORDER BY 
+    DATE_FORMAT(date, '%Y-%m');

@@ -1,0 +1,16 @@
+SELECT 
+    COUNT(*) as count,
+    MONTHNAME(invoice_date) as month
+FROM
+    invoice
+WHERE
+    (YEAR(invoice_date) = YEAR(CURDATE()) AND
+    MONTH(invoice_date) = MONTH(CURDATE()) - 1)
+    OR
+    (YEAR(invoice_date) = YEAR(CURDATE()) - 1 AND
+     MONTH(invoice_date) = 12 AND
+     MONTH(CURDATE()) = 01)
+GROUP BY
+    month;
+    
+    "How many invoices were issued in the previous month?"
